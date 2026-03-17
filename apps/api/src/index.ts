@@ -5,6 +5,8 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { db } from './infrastructure/db/client.js';
 import { sql } from 'drizzle-orm';
+import { createAuthRoutes } from './presentation/routes/auth.js';
+import { userRepository, githubOAuthClient, authenticateWithGithub } from './di/index.js';
 
 const app = new Hono();
 
@@ -19,6 +21,10 @@ app.use(
     credentials: true,
   }),
 );
+
+// ─── Routes ───────────────────────────────────────────────────────────────────
+
+app.route('/auth', createAuthRoutes(userRepository, githubOAuthClient, authenticateWithGithub));
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 
