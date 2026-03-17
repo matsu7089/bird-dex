@@ -1,3 +1,7 @@
+import type { PhotoWithSpecies } from './photo.js';
+
+export type { PhotoWithSpecies };
+
 export interface Sighting {
   id: string;
   userId: string;
@@ -8,18 +12,6 @@ export interface Sighting {
   locationName: string | null;
   createdAt: Date;
   updatedAt: Date;
-}
-
-export interface PhotoWithSpecies {
-  id: string;
-  sightingId: string;
-  speciesId: string;
-  speciesName: string;     // JOIN from species
-  blobUrl: string;
-  thumbnailUrl: string | null;
-  originalFilename: string;
-  sortOrder: number;
-  createdAt: Date;
 }
 
 export interface SightingWithPhotos extends Sighting {
