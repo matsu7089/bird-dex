@@ -7,7 +7,15 @@ import { db } from './infrastructure/db/client.js';
 import { sql } from 'drizzle-orm';
 import { createAuthRoutes } from './presentation/routes/auth.js';
 import { createSpeciesRoutes } from './presentation/routes/species.js';
-import { userRepository, githubOAuthClient, authenticateWithGithub, manageSpecies } from './di/index.js';
+import { createSightingsRoutes } from './presentation/routes/sightings.js';
+import {
+  userRepository,
+  githubOAuthClient,
+  authenticateWithGithub,
+  manageSpecies,
+  registerSighting,
+  getHeatmapData,
+} from './di/index.js';
 import { createAuthMiddleware } from './presentation/middleware/auth.js';
 
 const app = new Hono();
@@ -30,6 +38,7 @@ app.route('/auth', createAuthRoutes(userRepository, githubOAuthClient, authentic
 
 const authMiddleware = createAuthMiddleware(userRepository);
 app.route('/api/species', createSpeciesRoutes(manageSpecies, authMiddleware));
+app.route('/api/sightings', createSightingsRoutes({ registerSighting, getHeatmapData, authMiddleware }));
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 

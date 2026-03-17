@@ -1,1 +1,8 @@
-export { userRepository, githubOAuthClient, authenticateWithGithub, manageSpecies } from './container.js';
+export {
+  userRepository,
+  githubOAuthClient,
+  authenticateWithGithub,
+  manageSpecies,
+  registerSighting,
+  getHeatmapData,
+} from './container.js';
