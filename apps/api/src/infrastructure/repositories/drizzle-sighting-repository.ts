@@ -62,6 +62,7 @@ export class DrizzleSightingRepository implements ISightingRepository {
               sightingId: photos.sightingId,
               speciesId: photos.speciesId,
               speciesName: species.name,
+              sightedAt: sightings.sightedAt,
               blobUrl: photos.blobUrl,
               thumbnailUrl: photos.thumbnailUrl,
               originalFilename: photos.originalFilename,
@@ -70,6 +71,7 @@ export class DrizzleSightingRepository implements ISightingRepository {
             })
             .from(photos)
             .innerJoin(species, eq(photos.speciesId, species.id))
+            .innerJoin(sightings, eq(photos.sightingId, sightings.id))
             .where(inArray(photos.sightingId, sightingIds))
             .orderBy(photos.sortOrder)
         : [];
@@ -104,6 +106,7 @@ export class DrizzleSightingRepository implements ISightingRepository {
         sightingId: photos.sightingId,
         speciesId: photos.speciesId,
         speciesName: species.name,
+        sightedAt: sightings.sightedAt,
         blobUrl: photos.blobUrl,
         thumbnailUrl: photos.thumbnailUrl,
         originalFilename: photos.originalFilename,
@@ -112,6 +115,7 @@ export class DrizzleSightingRepository implements ISightingRepository {
       })
       .from(photos)
       .innerJoin(species, eq(photos.speciesId, species.id))
+      .innerJoin(sightings, eq(photos.sightingId, sightings.id))
       .where(eq(photos.sightingId, id))
       .orderBy(photos.sortOrder);
 
