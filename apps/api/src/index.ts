@@ -8,6 +8,7 @@ import { sql } from 'drizzle-orm';
 import { createAuthRoutes } from './presentation/routes/auth.js';
 import { createSpeciesRoutes } from './presentation/routes/species.js';
 import { createSightingsRoutes } from './presentation/routes/sightings.js';
+import { createPhotosRoutes } from './presentation/routes/photos.js';
 import {
   userRepository,
   githubOAuthClient,
@@ -15,6 +16,10 @@ import {
   manageSpecies,
   registerSighting,
   getHeatmapData,
+  addPhotoToSighting,
+  photoRepository,
+  blobStorage,
+  getSpeciesGallery,
 } from './di/index.js';
 import { createAuthMiddleware } from './presentation/middleware/auth.js';
 
@@ -37,8 +42,11 @@ app.use(
 app.route('/auth', createAuthRoutes(userRepository, githubOAuthClient, authenticateWithGithub));
 
 const authMiddleware = createAuthMiddleware(userRepository);
-app.route('/api/species', createSpeciesRoutes(manageSpecies, authMiddleware));
+app.route('/api/species', createSpeciesRoutes(manageSpecies, authMiddleware, getSpeciesGallery));
 app.route('/api/sightings', createSightingsRoutes({ registerSighting, getHeatmapData, authMiddleware }));
+
+const photosRouter = createPhotosRoutes(addPhotoToSighting, photoRepository, blobStorage, authMiddleware);
+app.route('/api', photosRouter);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 

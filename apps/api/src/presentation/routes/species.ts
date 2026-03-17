@@ -5,12 +5,16 @@ import {
   SpeciesHasPhotosError,
   SpeciesNotFoundError,
 } from '../../application/use-cases/manage-species.js';
+import type { GetSpeciesGallery } from '../../application/use-cases/get-species-gallery.js';
+import { SpeciesNotFoundError as GallerySpeciesNotFoundError } from '../../application/use-cases/get-species-gallery.js';
 import { CreateSpeciesSchema, UpdateSpeciesSchema } from '../dto/species.js';
+import { PhotoQuerySchema } from '../dto/photo.js';
 import type { HonoEnv } from '../middleware/auth.js';
 
 export function createSpeciesRoutes(
   manageSpecies: ManageSpecies,
   authMiddleware: ReturnType<typeof import('../middleware/auth.js').createAuthMiddleware>,
+  getSpeciesGallery: GetSpeciesGallery,
 ) {
   const router = new Hono<HonoEnv>();
 
@@ -79,9 +83,23 @@ export function createSpeciesRoutes(
     }
   });
 
-  // GET /:id/photos — stub
+  // GET /:id/photos
   router.get('/:id/photos', async (c) => {
-    return c.json({ photos: [] });
+    const user = c.get('user');
+    const parsed = PhotoQuerySchema.safeParse(c.req.query());
+    if (!parsed.success) return c.json({ error: parsed.error.format() }, 400);
+    try {
+      const result = await getSpeciesGallery.execute(
+        user.id,
+        c.req.param('id'),
+        parsed.data.page,
+        parsed.data.limit,
+      );
+      return c.json(result);
+    } catch (err) {
+      if (err instanceof GallerySpeciesNotFoundError) return c.json({ error: err.message }, 404);
+      throw err;
+    }
   });
 
   return router;
