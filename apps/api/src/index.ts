@@ -6,7 +6,9 @@ import { logger } from 'hono/logger';
 import { db } from './infrastructure/db/client.js';
 import { sql } from 'drizzle-orm';
 import { createAuthRoutes } from './presentation/routes/auth.js';
-import { userRepository, githubOAuthClient, authenticateWithGithub } from './di/index.js';
+import { createSpeciesRoutes } from './presentation/routes/species.js';
+import { userRepository, githubOAuthClient, authenticateWithGithub, manageSpecies } from './di/index.js';
+import { createAuthMiddleware } from './presentation/middleware/auth.js';
 
 const app = new Hono();
 
@@ -25,6 +27,9 @@ app.use(
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
 app.route('/auth', createAuthRoutes(userRepository, githubOAuthClient, authenticateWithGithub));
+
+const authMiddleware = createAuthMiddleware(userRepository);
+app.route('/api/species', createSpeciesRoutes(manageSpecies, authMiddleware));
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 
