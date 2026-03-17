@@ -1,7 +1,11 @@
+import './index.css';
 import { render } from 'solid-js/web';
+import { createResource } from 'solid-js';
 import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
 import { RouterProvider, createRouter } from '@tanstack/solid-router';
 import { routeTree } from './routeTree.gen';
+import { apiFetch } from './lib/api';
+import type { UserDto } from './lib/queries';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,9 +16,17 @@ const queryClient = new QueryClient({
   },
 });
 
+const [auth, { refetch: refetchAuth }] = createResource<UserDto | null>(async () => {
+  try {
+    return await apiFetch<UserDto>('/auth/me');
+  } catch {
+    return null;
+  }
+});
+
 const router = createRouter({
   routeTree,
-  context: { queryClient },
+  context: { queryClient, auth, refetchAuth },
   defaultPreload: 'intent',
 });
 

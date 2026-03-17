@@ -12,9 +12,35 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
     },
   });
 
+  if (res.status === 401) {
+    window.location.href = '/login';
+    throw new Error('Unauthorized');
+  }
+
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error((body as { message?: string })?.message ?? `HTTP ${res.status}`);
+    throw new Error((body as { message?: string; error?: string })?.message ?? (body as { error?: string })?.error ?? `HTTP ${res.status}`);
+  }
+
+  return res.json() as Promise<T>;
+}
+
+export async function apiUpload<T>(path: string, formData: FormData): Promise<T> {
+  // Do NOT set Content-Type — browser sets it automatically with the correct boundary
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    credentials: 'include',
+    body: formData,
+  });
+
+  if (res.status === 401) {
+    window.location.href = '/login';
+    throw new Error('Unauthorized');
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error((body as { message?: string; error?: string })?.message ?? (body as { error?: string })?.error ?? `HTTP ${res.status}`);
   }
 
   return res.json() as Promise<T>;
