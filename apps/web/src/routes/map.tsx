@@ -23,48 +23,52 @@ function MapPage() {
   }));
 
   let containerRef!: HTMLDivElement;
-  let mapInstance: L.Map | undefined;
   let heatLayer: L.Layer | undefined;
+  const [map, setMap] = createSignal<L.Map>();
 
   onMount(async () => {
     const L = (await import("leaflet")).default;
     await import("leaflet.heat");
 
-    mapInstance = L.map(containerRef).setView([36.5, 137.0], 6);
+    const mapInstance = L.map(containerRef).setView([36.5, 137.0], 6);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(mapInstance);
 
-    onCleanup(() => mapInstance?.remove());
+    setMap(mapInstance);
+    onCleanup(() => mapInstance.remove());
   });
 
-  createEffect(async () => {
+  createEffect(() => {
+    const mapInstance = map();
     const data = heatmapQuery.data;
     if (!mapInstance || !data) return;
 
-    const L = (await import("leaflet")).default;
+    void (async () => {
+      const L = (await import("leaflet")).default;
 
-    if (heatLayer) {
-      mapInstance.removeLayer(heatLayer);
-    }
+      if (heatLayer) {
+        mapInstance.removeLayer(heatLayer);
+      }
 
-    const count = data.length;
-    const radius = count <= 3 ? 60 : count <= 10 ? 40 : 25;
-    const blur = count <= 3 ? 30 : count <= 10 ? 20 : 15;
+      const count = data.length;
+      const radius = count <= 3 ? 60 : count <= 10 ? 40 : 25;
+      const blur = count <= 3 ? 30 : count <= 10 ? 20 : 15;
 
-    const points: [number, number, number?][] = data.map((p) => [p.lat, p.lng, p.weight]);
-    heatLayer = L.heatLayer(points, {
-      radius,
-      blur,
-      minOpacity: 0.5,
-      maxZoom: 17,
-      gradient: { 0.4: "#3b82f6", 0.65: "#84cc16", 1: "#ef4444" },
-    }).addTo(mapInstance);
+      const points: [number, number, number?][] = data.map((p) => [p.lat, p.lng, p.weight]);
+      heatLayer = L.heatLayer(points, {
+        radius,
+        blur,
+        minOpacity: 0.5,
+        maxZoom: 17,
+        gradient: { 0.4: "#3b82f6", 0.65: "#84cc16", 1: "#ef4444" },
+      }).addTo(mapInstance);
 
-    if (count > 0) {
-      const bounds = L.latLngBounds(data.map((p) => [p.lat, p.lng] as [number, number]));
-      mapInstance.fitBounds(bounds, { padding: [50, 50] });
-    }
+      if (count > 0) {
+        const bounds = L.latLngBounds(data.map((p) => [p.lat, p.lng] as [number, number]));
+        mapInstance.fitBounds(bounds, { padding: [50, 50] });
+      }
+    })();
   });
 
   return (
