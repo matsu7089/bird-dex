@@ -9,38 +9,87 @@ permissions:
   contents: read
 
 jobs:
-  build-push:
+  prepare:
     runs-on: ubuntu-latest
     outputs:
-      image_tag: ${{ steps.tag.outputs.tag }}
+      tag: ${{ steps.tag.outputs.tag }}
+      infra-changed: ${{ steps.check.outputs.infra-changed }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - id: tag
         run: echo "tag=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
 
+      - id: check
+        run: |
+          if git diff --name-only HEAD~1 HEAD | grep -q "^infra/"; then
+            echo "infra-changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "infra-changed=false" >> $GITHUB_OUTPUT
+          fi
+
+  build-api:
+    runs-on: ubuntu-latest
+    needs: prepare
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
       - uses: azure/login@v2
         with:
           creds: "${{ secrets.AZURE_CREDENTIALS }}"
 
-      - run: az acr login --name ${{ secrets.ACR_NAME }}
-
-      - name: Build & push api
+      - name: Login to ACR
         run: |
-          docker build -f docker/Dockerfile.api \
-            -t ${{ secrets.ACR_LOGIN_SERVER }}/api:${{ steps.tag.outputs.tag }} .
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/api:${{ steps.tag.outputs.tag }}
+          token=$(az acr login --name ${{ secrets.ACR_NAME }} --expose-token --output tsv --query accessToken)
+          echo "$token" | docker login ${{ secrets.ACR_LOGIN_SERVER }} \
+            --username 00000000-0000-0000-0000-000000000000 \
+            --password-stdin
 
-      - name: Build & push web
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.api
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/api:${{ needs.prepare.outputs.tag }}
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,scope=api,mode=max
+
+  build-web:
+    runs-on: ubuntu-latest
+    needs: prepare
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: azure/login@v2
+        with:
+          creds: "${{ secrets.AZURE_CREDENTIALS }}"
+
+      - name: Login to ACR
         run: |
-          docker build -f docker/Dockerfile.web \
-            --build-arg VITE_API_URL=${{ secrets.API_URL }} \
-            -t ${{ secrets.ACR_LOGIN_SERVER }}/web:${{ steps.tag.outputs.tag }} .
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/web:${{ steps.tag.outputs.tag }}
+          token=$(az acr login --name ${{ secrets.ACR_NAME }} --expose-token --output tsv --query accessToken)
+          echo "$token" | docker login ${{ secrets.ACR_LOGIN_SERVER }} \
+            --username 00000000-0000-0000-0000-000000000000 \
+            --password-stdin
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.web
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/web:${{ needs.prepare.outputs.tag }}
+          build-args: VITE_API_URL=${{ secrets.API_URL }}
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,scope=web,mode=max
 
   deploy:
-    needs: build-push
     runs-on: ubuntu-latest
+    needs: [prepare, build-api, build-web]
     steps:
       - uses: actions/checkout@v4
 
@@ -48,16 +97,29 @@ jobs:
         with:
           creds: "${{ secrets.AZURE_CREDENTIALS }}"
 
-      - name: Deploy Bicep
+      - name: Deploy Bicep (infra changed)
+        if: needs.prepare.outputs.infra-changed == 'true'
         run: |
           az deployment group create \
             --resource-group ${{ secrets.AZURE_RG }} \
             --template-file infra/bicep/main.bicep \
             --parameters infra/bicep/main.bicepparam \
-            --parameters apiImageTag=${{ needs.build-push.outputs.image_tag }} \
-                         webImageTag=${{ needs.build-push.outputs.image_tag }}
+            --parameters apiImageTag=${{ needs.prepare.outputs.tag }} \
+                         webImageTag=${{ needs.prepare.outputs.tag }}
         env:
           DB_ADMIN_PASSWORD: ${{ secrets.DB_PASSWORD }}
           GITHUB_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+
+      - name: Update container images only
+        if: needs.prepare.outputs.infra-changed == 'false'
+        run: |
+          az containerapp update \
+            --name birddex-prod-api \
+            --resource-group ${{ secrets.AZURE_RG }} \
+            --image ${{ secrets.ACR_LOGIN_SERVER }}/api:${{ needs.prepare.outputs.tag }}
+          az containerapp update \
+            --name birddex-prod-web \
+            --resource-group ${{ secrets.AZURE_RG }} \
+            --image ${{ secrets.ACR_LOGIN_SERVER }}/web:${{ needs.prepare.outputs.tag }}
