@@ -1,6 +1,6 @@
 import { createSignal, For, Show } from 'solid-js';
+import exifr from 'exifr';
 import type { SpeciesWithCount } from '~/lib/queries';
-import { Button } from '~/components/ui/Button';
 
 export interface PendingPhoto {
   file: File;
@@ -8,26 +8,53 @@ export interface PendingPhoto {
   preview: string;
 }
 
+export interface ExifData {
+  date?: string;   // YYYY-MM-DD
+  lat?: number;
+  lng?: number;
+}
+
 interface PhotoUploadAreaProps {
   speciesList: SpeciesWithCount[];
   value: PendingPhoto[];
   onChange: (photos: PendingPhoto[]) => void;
+  onExifFound?: (data: ExifData) => void;
 }
 
 export function PhotoUploadArea(props: PhotoUploadAreaProps) {
   const [dragging, setDragging] = createSignal(false);
 
-  function addFiles(files: FileList | null) {
+  async function addFiles(files: FileList | null) {
     if (!files) return;
     const defaultSpeciesId = props.speciesList[0]?.id ?? '';
-    const newPhotos: PendingPhoto[] = Array.from(files)
-      .filter((f) => f.type.startsWith('image/'))
-      .map((file) => ({
-        file,
-        speciesId: defaultSpeciesId,
-        preview: URL.createObjectURL(file),
-      }));
+    const imageFiles = Array.from(files).filter((f) => f.type.startsWith('image/'));
+    const newPhotos: PendingPhoto[] = imageFiles.map((file) => ({
+      file,
+      speciesId: defaultSpeciesId,
+      preview: URL.createObjectURL(file),
+    }));
     props.onChange([...props.value, ...newPhotos]);
+
+    // EXIFから最初の画像の日付・緯度経度を取得
+    if (props.onExifFound && imageFiles.length > 0) {
+      try {
+        const exif = await exifr.parse(imageFiles[0], { gps: true, pick: ['DateTimeOriginal', 'latitude', 'longitude'] });
+        if (!exif) return;
+        const result: ExifData = {};
+        if (exif.DateTimeOriginal instanceof Date) {
+          result.date = exif.DateTimeOriginal.toISOString().slice(0, 10);
+        }
+        if (typeof exif.latitude === 'number' && typeof exif.longitude === 'number') {
+          result.lat = exif.latitude;
+          result.lng = exif.longitude;
+        }
+        if (result.date || result.lat !== undefined) {
+          props.onExifFound(result);
+        }
+      } catch {
+        // EXIFが読めない場合は無視
+      }
+    }
   }
 
   function removePhoto(index: number) {

@@ -6,7 +6,7 @@ import { fetchers, queryKeys } from '~/lib/queries';
 import type { Sighting } from '~/lib/queries';
 import { LeafletMap } from '~/components/map/LeafletMap';
 import { PhotoUploadArea } from '~/components/sightings/PhotoUploadArea';
-import type { PendingPhoto } from '~/components/sightings/PhotoUploadArea';
+import type { PendingPhoto, ExifData } from '~/components/sightings/PhotoUploadArea';
 import { Input, Textarea } from '~/components/ui/Input';
 import { Button } from '~/components/ui/Button';
 import { Spinner } from '~/components/ui/Spinner';
@@ -33,6 +33,12 @@ function SightingNewPage() {
   const [photos, setPhotos] = createSignal<PendingPhoto[]>([]);
   const [error, setError] = createSignal('');
   const [loading, setLoading] = createSignal(false);
+
+  function handleExif(data: ExifData) {
+    if (data.date) setSightedAt(data.date);
+    if (data.lat !== undefined) setLat(data.lat);
+    if (data.lng !== undefined) setLng(data.lng);
+  }
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
@@ -74,6 +80,25 @@ function SightingNewPage() {
     <div class="max-w-2xl">
       <h1 class="mb-6 text-2xl font-bold">観察記録を追加</h1>
       <form onSubmit={handleSubmit} class="flex flex-col gap-5">
+        <div>
+          <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">写真</label>
+          <Show
+            when={speciesQuery.data && speciesQuery.data.length > 0}
+            fallback={
+              <p class="text-sm text-gray-500">
+                写真を追加するには先に<a href="/species" class="text-emerald-600 underline">図鑑に種を登録</a>してください。
+              </p>
+            }
+          >
+            <PhotoUploadArea
+              speciesList={speciesQuery.data!}
+              value={photos()}
+              onChange={setPhotos}
+              onExifFound={handleExif}
+            />
+          </Show>
+        </div>
+
         <Input
           id="sighted-at"
           label="観察日 *"
@@ -113,24 +138,6 @@ function SightingNewPage() {
           placeholder="観察メモ（省略可）"
           rows="3"
         />
-
-        <div>
-          <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">写真</label>
-          <Show
-            when={speciesQuery.data && speciesQuery.data.length > 0}
-            fallback={
-              <p class="text-sm text-gray-500">
-                写真を追加するには先に<a href="/species" class="text-emerald-600 underline">図鑑に種を登録</a>してください。
-              </p>
-            }
-          >
-            <PhotoUploadArea
-              speciesList={speciesQuery.data!}
-              value={photos()}
-              onChange={setPhotos}
-            />
-          </Show>
-        </div>
 
         {error() && <p class="text-sm text-red-600">{error()}</p>}
 
