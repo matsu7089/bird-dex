@@ -20,7 +20,7 @@ COPY packages/shared/ ./packages/shared/
 RUN pnpm --filter @bird-dex/api build
 
 # Extract production dependencies only
-RUN pnpm --filter @bird-dex/api deploy --prod /deploy/api
+RUN pnpm --filter @bird-dex/api deploy --prod --legacy /deploy/api
 
 # ─── Stage 2: runner ──────────────────────────────────────────────────────────
 FROM node:20-alpine AS runner
