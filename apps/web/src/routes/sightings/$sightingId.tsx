@@ -5,7 +5,7 @@ import { useNavigate } from '@tanstack/solid-router';
 import { apiFetch, apiUpload } from '~/lib/api';
 import { fetchers, queryKeys } from '~/lib/queries';
 import { LeafletMap } from '~/components/map/LeafletMap';
-import { PhotoCarousel } from '~/components/photos/PhotoCarousel';
+import { PhotoGrid } from '~/components/photos/PhotoGrid';
 import { PhotoUploadArea } from '~/components/sightings/PhotoUploadArea';
 import type { PendingPhoto } from '~/components/sightings/PhotoUploadArea';
 import { Button } from '~/components/ui/Button';
@@ -99,7 +99,7 @@ function SightingDetailPage() {
               <p class="text-gray-700 dark:text-gray-300">{s().memo}</p>
             )}
 
-            <PhotoCarousel photos={s().photos} onDelete={handleDeletePhoto} />
+            <PhotoGrid photos={s().photos} onDelete={handleDeletePhoto} />
 
             {/* Add more photos */}
             <Show when={speciesQuery.data && speciesQuery.data.length > 0}>
