@@ -25,8 +25,8 @@ RUN pnpm --filter @bird-dex/api deploy --prod --legacy /deploy/api
 # ─── Stage 2: runner ──────────────────────────────────────────────────────────
 FROM node:20-alpine AS runner
 
-ARG GITHUB_REDIRECT_URI=http://localhost:3000/auth/github/callback
-ENV GITHUB_REDIRECT_URI=$GITHUB_REDIRECT_URI
+ARG GITHUB_REDIRECT_URL=http://localhost:3000/auth/github/callback
+ENV GITHUB_REDIRECT_URL=$GITHUB_REDIRECT_URL
 
 # Required for healthcheck and sharp prebuilt binary
 RUN apk add --no-cache curl vips

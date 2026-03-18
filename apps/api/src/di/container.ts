@@ -17,7 +17,7 @@ export const userRepository = new DrizzleUserRepository(db);
 export const githubOAuthClient = new GitHubOAuthClient(
   process.env.GITHUB_CLIENT_ID!,
   process.env.GITHUB_CLIENT_SECRET!,
-  process.env.GITHUB_REDIRECT_URI ?? "http://localhost:3000/auth/github/callback",
+  process.env.GITHUB_REDIRECT_URL ?? "http://localhost:3000/auth/github/callback",
 );
 
 export const authenticateWithGithub = new AuthenticateWithGithub(userRepository, githubOAuthClient);

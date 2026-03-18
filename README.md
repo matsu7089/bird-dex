@@ -134,7 +134,7 @@ pnpm --filter @bird-dex/api db:studio
 | `BLOB_BUCKET`          | バケット名                        | `birdlog-photos`                                    |
 | `GITHUB_CLIENT_ID`     | GitHub OAuth App クライアント ID  | —                                                   |
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth App シークレット     | —                                                   |
-| `GITHUB_REDIRECT_URI`  | OAuth コールバック URL            | `http://localhost:3000/auth/github/callback`        |
+| `GITHUB_REDIRECT_URL`  | OAuth コールバック URL            | `http://localhost:3000/auth/github/callback`        |
 | `SESSION_SECRET`       | セッション署名キー（32文字以上）  | —                                                   |
 | `PORT`                 | API サーバーポート                | `3000`                                              |
 | `CORS_ORIGIN`          | CORS 許可オリジン                 | `http://localhost:5173`                             |

@@ -379,7 +379,7 @@ BLOB_BUCKET=birdlog-photos
 # GitHub OAuth
 GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
-GITHUB_REDIRECT_URI=http://localhost:3000/auth/github/callback
+GITHUB_REDIRECT_URL=http://localhost:3000/auth/github/callback
 
 # Session
 SESSION_SECRET=
