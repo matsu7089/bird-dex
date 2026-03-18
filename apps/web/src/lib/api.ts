@@ -13,7 +13,6 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   });
 
   if (res.status === 401) {
-    window.location.href = '/login';
     throw new Error('Unauthorized');
   }
 
@@ -34,7 +33,6 @@ export async function apiUpload<T>(path: string, formData: FormData): Promise<T>
   });
 
   if (res.status === 401) {
-    window.location.href = '/login';
     throw new Error('Unauthorized');
   }
 
