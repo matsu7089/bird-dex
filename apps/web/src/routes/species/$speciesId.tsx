@@ -33,6 +33,14 @@ function SpeciesDetailPage() {
     if (!confirm('この写真を削除しますか？')) return;
     await apiFetch(`/api/photos/${photoId}`, { method: 'DELETE' });
     queryClient.invalidateQueries({ queryKey: queryKeys.speciesPhotos(speciesId, page()) });
+    queryClient.invalidateQueries({ queryKey: queryKeys.speciesDetail(speciesId) });
+    queryClient.invalidateQueries({ queryKey: queryKeys.species() });
+  }
+
+  async function handleSetBestPhoto(photoId: string | null) {
+    const newId = speciesQuery.data?.bestPhotoId === photoId ? null : photoId;
+    await fetchers.setBestPhoto(speciesId, newId);
+    queryClient.invalidateQueries({ queryKey: queryKeys.speciesDetail(speciesId) });
     queryClient.invalidateQueries({ queryKey: queryKeys.species() });
   }
 
@@ -66,7 +74,12 @@ function SpeciesDetailPage() {
             <Show when={photosQuery.data}>
               {(data) => (
                 <>
-                  <PhotoGrid photos={data().items} onDelete={handleDeletePhoto} />
+                  <PhotoGrid
+                    photos={data().items}
+                    onDelete={handleDeletePhoto}
+                    bestPhotoId={speciesQuery.data?.bestPhotoId}
+                    onSetBestPhoto={handleSetBestPhoto}
+                  />
                   <Show when={data().total > data().limit}>
                     <div class="mt-4">
                       <Pagination

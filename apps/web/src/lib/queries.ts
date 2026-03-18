@@ -15,12 +15,15 @@ export interface Species {
   name: string;
   description: string | null;
   sortOrder: number;
+  bestPhotoId: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface SpeciesWithCount extends Species {
   photoCount: number;
+  bestPhotoThumbnailUrl: string | null;
+  bestPhotoBlobUrl: string | null;
 }
 
 export interface Photo {
@@ -118,4 +121,10 @@ export const fetchers = {
   sightingDetail: (id: string) => apiFetch<SightingWithPhotos>(`/api/sightings/${id}`),
   heatmap: (speciesId?: string) =>
     apiFetch<HeatmapPoint[]>(`/api/sightings/heatmap${buildQuery({ species_id: speciesId })}`),
+  setBestPhoto: (speciesId: string, photoId: string | null) =>
+    apiFetch<Species>(`/api/species/${speciesId}/best-photo`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ photoId }),
+    }),
 };
