@@ -16,6 +16,10 @@ RUN pnpm install --frozen-lockfile
 COPY apps/api/ ./apps/api/
 COPY packages/shared/ ./packages/shared/
 
+# Build-time env var for frontend URL
+ARG FRONTEND_URL=http://localhost:5173
+ENV FRONTEND_URL=$FRONTEND_URL
+
 # Build API (shared is exported as TS and compiled inline)
 RUN pnpm --filter @bird-dex/api build
 

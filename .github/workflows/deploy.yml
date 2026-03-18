@@ -55,6 +55,7 @@ jobs:
           file: docker/Dockerfile.api
           push: true
           tags: ${{ secrets.ACR_LOGIN_SERVER }}/api:${{ needs.prepare.outputs.tag }}
+          build-args: FRONTEND_URL=${{ secrets.FRONTEND_URL }}
           cache-from: type=gha,scope=api
           cache-to: type=gha,scope=api,mode=max
 
