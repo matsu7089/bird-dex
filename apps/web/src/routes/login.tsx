@@ -4,6 +4,8 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
+const apiBase = import.meta.env.VITE_API_URL ?? "";
+
 function LoginPage() {
   return (
     <div class="flex min-h-[calc(100vh-4rem)] items-center justify-center">
@@ -16,7 +18,7 @@ function LoginPage() {
           </p>
         </div>
         <a
-          href="/auth/github"
+          href={`${apiBase}/auth/github`}
           class="flex w-full items-center justify-center gap-3 rounded-lg bg-gray-900 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
         >
           <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current" aria-hidden="true">
