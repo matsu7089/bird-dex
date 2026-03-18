@@ -40,6 +40,7 @@ export const species = pgTable(
     name: varchar('name', { length: 200 }).notNull(),
     description: text('description'),
     sortOrder: integer('sort_order').notNull().default(0),
+    bestPhotoId: uuid('best_photo_id'), // FK to photos.id (set null on delete) — managed via db:push
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()
       .default(sql`now()`),
