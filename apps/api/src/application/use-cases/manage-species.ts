@@ -56,6 +56,12 @@ export class ManageSpecies {
     return this.repo.update(id, userId, data);
   }
 
+  async setBestPhoto(speciesId: string, userId: string, photoId: string | null): Promise<Species> {
+    const existing = await this.repo.findById(speciesId, userId);
+    if (!existing) throw new SpeciesNotFoundError(`Species not found: ${speciesId}`);
+    return this.repo.setBestPhoto(speciesId, userId, photoId);
+  }
+
   async delete(id: string, userId: string): Promise<void> {
     const existing = await this.repo.findById(id, userId);
     if (!existing) throw new SpeciesNotFoundError(`Species not found: ${id}`);

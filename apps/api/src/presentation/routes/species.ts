@@ -7,7 +7,7 @@ import {
 } from '../../application/use-cases/manage-species.js';
 import type { GetSpeciesGallery } from '../../application/use-cases/get-species-gallery.js';
 import { SpeciesNotFoundError as GallerySpeciesNotFoundError } from '../../application/use-cases/get-species-gallery.js';
-import { CreateSpeciesSchema, UpdateSpeciesSchema } from '../dto/species.js';
+import { CreateSpeciesSchema, UpdateSpeciesSchema, SetBestPhotoSchema } from '../dto/species.js';
 import { PhotoQuerySchema } from '../dto/photo.js';
 import type { HonoEnv } from '../middleware/auth.js';
 
@@ -79,6 +79,20 @@ export function createSpeciesRoutes(
     } catch (err) {
       if (err instanceof SpeciesNotFoundError) return c.json({ error: err.message }, 404);
       if (err instanceof SpeciesHasPhotosError) return c.json({ error: err.message }, 409);
+      throw err;
+    }
+  });
+
+  // PUT /:id/best-photo
+  router.put('/:id/best-photo', async (c) => {
+    const user = c.get('user');
+    const parsed = SetBestPhotoSchema.safeParse(await c.req.json());
+    if (!parsed.success) return c.json({ error: parsed.error.format() }, 400);
+    try {
+      const s = await manageSpecies.setBestPhoto(c.req.param('id'), user.id, parsed.data.photoId);
+      return c.json(s);
+    } catch (err) {
+      if (err instanceof SpeciesNotFoundError) return c.json({ error: err.message }, 404);
       throw err;
     }
   });

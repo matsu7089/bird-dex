@@ -8,6 +8,10 @@ export const CreateSpeciesSchema = z.object({
 
 export const UpdateSpeciesSchema = CreateSpeciesSchema.partial();
 
+export const SetBestPhotoSchema = z.object({
+  photoId: z.string().uuid().nullable(),
+});
+
 export type CreateSpeciesInput = z.infer<typeof CreateSpeciesSchema>;
 export type UpdateSpeciesInput = z.infer<typeof UpdateSpeciesSchema>;
 

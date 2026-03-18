@@ -1,4 +1,5 @@
 import { and, count, eq, ne } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/pg-core';
 import type { Db } from '../db/client.js';
 import { species, photos } from '../db/schema.js';
 import type { ISpeciesRepository } from '../../domain/repositories/species-repository.js';
@@ -9,6 +10,7 @@ export class DrizzleSpeciesRepository implements ISpeciesRepository {
   constructor(private readonly db: Db) {}
 
   async findAllByUserId(userId: string): Promise<SpeciesWithCount[]> {
+    const bestPhoto = alias(photos, 'best_photo');
     const rows = await this.db
       .select({
         id: species.id,
@@ -16,14 +18,18 @@ export class DrizzleSpeciesRepository implements ISpeciesRepository {
         name: species.name,
         description: species.description,
         sortOrder: species.sortOrder,
+        bestPhotoId: species.bestPhotoId,
         createdAt: species.createdAt,
         updatedAt: species.updatedAt,
         photoCount: count(photos.id),
+        bestPhotoThumbnailUrl: bestPhoto.thumbnailUrl,
+        bestPhotoBlobUrl: bestPhoto.blobUrl,
       })
       .from(species)
       .leftJoin(photos, eq(photos.speciesId, species.id))
+      .leftJoin(bestPhoto, eq(bestPhoto.id, species.bestPhotoId))
       .where(eq(species.userId, userId))
-      .groupBy(species.id)
+      .groupBy(species.id, bestPhoto.thumbnailUrl, bestPhoto.blobUrl)
       .orderBy(species.sortOrder, species.createdAt);
 
     return rows.map((r) => ({ ...r, photoCount: Number(r.photoCount) }));
@@ -31,7 +37,16 @@ export class DrizzleSpeciesRepository implements ISpeciesRepository {
 
   async findById(id: string, userId: string): Promise<Species | null> {
     const rows = await this.db
-      .select()
+      .select({
+        id: species.id,
+        userId: species.userId,
+        name: species.name,
+        description: species.description,
+        sortOrder: species.sortOrder,
+        bestPhotoId: species.bestPhotoId,
+        createdAt: species.createdAt,
+        updatedAt: species.updatedAt,
+      })
       .from(species)
       .where(and(eq(species.id, id), eq(species.userId, userId)))
       .limit(1);
@@ -56,10 +71,19 @@ export class DrizzleSpeciesRepository implements ISpeciesRepository {
     return rows[0]!;
   }
 
+  async setBestPhoto(id: string, userId: string, photoId: string | null): Promise<Species> {
+    const rows = await this.db
+      .update(species)
+      .set({ bestPhotoId: photoId, updatedAt: new Date() })
+      .where(and(eq(species.id, id), eq(species.userId, userId)))
+      .returning();
+    return rows[0]!;
+  }
+
   async update(
     id: string,
     userId: string,
-    data: { name?: string; description?: string | null; sortOrder?: number },
+    data: { name?: string; description?: string | null; sortOrder?: number; bestPhotoId?: string | null },
   ): Promise<Species> {
     const rows = await this.db
       .update(species)
