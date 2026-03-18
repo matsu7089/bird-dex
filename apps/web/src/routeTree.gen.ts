@@ -8,230 +8,230 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as MapRouteImport } from "./routes/map";
-import { Route as LoginRouteImport } from "./routes/login";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as SpeciesIndexRouteImport } from "./routes/species/index";
-import { Route as SightingsIndexRouteImport } from "./routes/sightings/index";
-import { Route as SpeciesManageRouteImport } from "./routes/species/manage";
-import { Route as SpeciesSpeciesIdRouteImport } from "./routes/species/$speciesId";
-import { Route as SightingsNewRouteImport } from "./routes/sightings/new";
-import { Route as SightingsSightingIdRouteImport } from "./routes/sightings/$sightingId";
-import { Route as SightingsSightingIdEditRouteImport } from "./routes/sightings/$sightingId_.edit";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as MapRouteImport } from './routes/map'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as SpeciesIndexRouteImport } from './routes/species/index'
+import { Route as SightingsIndexRouteImport } from './routes/sightings/index'
+import { Route as SpeciesManageRouteImport } from './routes/species/manage'
+import { Route as SpeciesSpeciesIdRouteImport } from './routes/species/$speciesId'
+import { Route as SightingsNewRouteImport } from './routes/sightings/new'
+import { Route as SightingsSightingIdRouteImport } from './routes/sightings/$sightingId'
+import { Route as SightingsSightingIdEditRouteImport } from './routes/sightings/$sightingId_.edit'
 
 const MapRoute = MapRouteImport.update({
-  id: "/map",
-  path: "/map",
+  id: '/map',
+  path: '/map',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const LoginRoute = LoginRouteImport.update({
-  id: "/login",
-  path: "/login",
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SpeciesIndexRoute = SpeciesIndexRouteImport.update({
-  id: "/species/",
-  path: "/species/",
+  id: '/species/',
+  path: '/species/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SightingsIndexRoute = SightingsIndexRouteImport.update({
-  id: "/sightings/",
-  path: "/sightings/",
+  id: '/sightings/',
+  path: '/sightings/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SpeciesManageRoute = SpeciesManageRouteImport.update({
-  id: "/species/manage",
-  path: "/species/manage",
+  id: '/species/manage',
+  path: '/species/manage',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SpeciesSpeciesIdRoute = SpeciesSpeciesIdRouteImport.update({
-  id: "/species/$speciesId",
-  path: "/species/$speciesId",
+  id: '/species/$speciesId',
+  path: '/species/$speciesId',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SightingsNewRoute = SightingsNewRouteImport.update({
-  id: "/sightings/new",
-  path: "/sightings/new",
+  id: '/sightings/new',
+  path: '/sightings/new',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SightingsSightingIdRoute = SightingsSightingIdRouteImport.update({
-  id: "/sightings/$sightingId",
-  path: "/sightings/$sightingId",
+  id: '/sightings/$sightingId',
+  path: '/sightings/$sightingId',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SightingsSightingIdEditRoute = SightingsSightingIdEditRouteImport.update({
-  id: "/sightings/$sightingId_/edit",
-  path: "/sightings/$sightingId/edit",
+  id: '/sightings/$sightingId_/edit',
+  path: '/sightings/$sightingId/edit',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/login": typeof LoginRoute;
-  "/map": typeof MapRoute;
-  "/sightings/$sightingId": typeof SightingsSightingIdRoute;
-  "/sightings/new": typeof SightingsNewRoute;
-  "/species/$speciesId": typeof SpeciesSpeciesIdRoute;
-  "/species/manage": typeof SpeciesManageRoute;
-  "/sightings/": typeof SightingsIndexRoute;
-  "/species/": typeof SpeciesIndexRoute;
-  "/sightings/$sightingId/edit": typeof SightingsSightingIdEditRoute;
+  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/map': typeof MapRoute
+  '/sightings/$sightingId': typeof SightingsSightingIdRoute
+  '/sightings/new': typeof SightingsNewRoute
+  '/species/$speciesId': typeof SpeciesSpeciesIdRoute
+  '/species/manage': typeof SpeciesManageRoute
+  '/sightings/': typeof SightingsIndexRoute
+  '/species/': typeof SpeciesIndexRoute
+  '/sightings/$sightingId/edit': typeof SightingsSightingIdEditRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/login": typeof LoginRoute;
-  "/map": typeof MapRoute;
-  "/sightings/$sightingId": typeof SightingsSightingIdRoute;
-  "/sightings/new": typeof SightingsNewRoute;
-  "/species/$speciesId": typeof SpeciesSpeciesIdRoute;
-  "/species/manage": typeof SpeciesManageRoute;
-  "/sightings": typeof SightingsIndexRoute;
-  "/species": typeof SpeciesIndexRoute;
-  "/sightings/$sightingId/edit": typeof SightingsSightingIdEditRoute;
+  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/map': typeof MapRoute
+  '/sightings/$sightingId': typeof SightingsSightingIdRoute
+  '/sightings/new': typeof SightingsNewRoute
+  '/species/$speciesId': typeof SpeciesSpeciesIdRoute
+  '/species/manage': typeof SpeciesManageRoute
+  '/sightings': typeof SightingsIndexRoute
+  '/species': typeof SpeciesIndexRoute
+  '/sightings/$sightingId/edit': typeof SightingsSightingIdEditRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/login": typeof LoginRoute;
-  "/map": typeof MapRoute;
-  "/sightings/$sightingId": typeof SightingsSightingIdRoute;
-  "/sightings/new": typeof SightingsNewRoute;
-  "/species/$speciesId": typeof SpeciesSpeciesIdRoute;
-  "/species/manage": typeof SpeciesManageRoute;
-  "/sightings/": typeof SightingsIndexRoute;
-  "/species/": typeof SpeciesIndexRoute;
-  "/sightings/$sightingId_/edit": typeof SightingsSightingIdEditRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/map': typeof MapRoute
+  '/sightings/$sightingId': typeof SightingsSightingIdRoute
+  '/sightings/new': typeof SightingsNewRoute
+  '/species/$speciesId': typeof SpeciesSpeciesIdRoute
+  '/species/manage': typeof SpeciesManageRoute
+  '/sightings/': typeof SightingsIndexRoute
+  '/species/': typeof SpeciesIndexRoute
+  '/sightings/$sightingId_/edit': typeof SightingsSightingIdEditRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/"
-    | "/login"
-    | "/map"
-    | "/sightings/$sightingId"
-    | "/sightings/new"
-    | "/species/$speciesId"
-    | "/species/manage"
-    | "/sightings/"
-    | "/species/"
-    | "/sightings/$sightingId/edit";
-  fileRoutesByTo: FileRoutesByTo;
+    | '/'
+    | '/login'
+    | '/map'
+    | '/sightings/$sightingId'
+    | '/sightings/new'
+    | '/species/$speciesId'
+    | '/species/manage'
+    | '/sightings/'
+    | '/species/'
+    | '/sightings/$sightingId/edit'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | "/"
-    | "/login"
-    | "/map"
-    | "/sightings/$sightingId"
-    | "/sightings/new"
-    | "/species/$speciesId"
-    | "/species/manage"
-    | "/sightings"
-    | "/species"
-    | "/sightings/$sightingId/edit";
+    | '/'
+    | '/login'
+    | '/map'
+    | '/sightings/$sightingId'
+    | '/sightings/new'
+    | '/species/$speciesId'
+    | '/species/manage'
+    | '/sightings'
+    | '/species'
+    | '/sightings/$sightingId/edit'
   id:
-    | "__root__"
-    | "/"
-    | "/login"
-    | "/map"
-    | "/sightings/$sightingId"
-    | "/sightings/new"
-    | "/species/$speciesId"
-    | "/species/manage"
-    | "/sightings/"
-    | "/species/"
-    | "/sightings/$sightingId_/edit";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/map'
+    | '/sightings/$sightingId'
+    | '/sightings/new'
+    | '/species/$speciesId'
+    | '/species/manage'
+    | '/sightings/'
+    | '/species/'
+    | '/sightings/$sightingId_/edit'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  LoginRoute: typeof LoginRoute;
-  MapRoute: typeof MapRoute;
-  SightingsSightingIdRoute: typeof SightingsSightingIdRoute;
-  SightingsNewRoute: typeof SightingsNewRoute;
-  SpeciesSpeciesIdRoute: typeof SpeciesSpeciesIdRoute;
-  SpeciesManageRoute: typeof SpeciesManageRoute;
-  SightingsIndexRoute: typeof SightingsIndexRoute;
-  SpeciesIndexRoute: typeof SpeciesIndexRoute;
-  SightingsSightingIdEditRoute: typeof SightingsSightingIdEditRoute;
+  IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
+  MapRoute: typeof MapRoute
+  SightingsSightingIdRoute: typeof SightingsSightingIdRoute
+  SightingsNewRoute: typeof SightingsNewRoute
+  SpeciesSpeciesIdRoute: typeof SpeciesSpeciesIdRoute
+  SpeciesManageRoute: typeof SpeciesManageRoute
+  SightingsIndexRoute: typeof SightingsIndexRoute
+  SpeciesIndexRoute: typeof SpeciesIndexRoute
+  SightingsSightingIdEditRoute: typeof SightingsSightingIdEditRoute
 }
 
-declare module "@tanstack/solid-router" {
+declare module '@tanstack/solid-router' {
   interface FileRoutesByPath {
-    "/map": {
-      id: "/map";
-      path: "/map";
-      fullPath: "/map";
-      preLoaderRoute: typeof MapRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/login": {
-      id: "/login";
-      path: "/login";
-      fullPath: "/login";
-      preLoaderRoute: typeof LoginRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/species/": {
-      id: "/species/";
-      path: "/species";
-      fullPath: "/species/";
-      preLoaderRoute: typeof SpeciesIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/sightings/": {
-      id: "/sightings/";
-      path: "/sightings";
-      fullPath: "/sightings/";
-      preLoaderRoute: typeof SightingsIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/species/manage": {
-      id: "/species/manage";
-      path: "/species/manage";
-      fullPath: "/species/manage";
-      preLoaderRoute: typeof SpeciesManageRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/species/$speciesId": {
-      id: "/species/$speciesId";
-      path: "/species/$speciesId";
-      fullPath: "/species/$speciesId";
-      preLoaderRoute: typeof SpeciesSpeciesIdRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/sightings/new": {
-      id: "/sightings/new";
-      path: "/sightings/new";
-      fullPath: "/sightings/new";
-      preLoaderRoute: typeof SightingsNewRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/sightings/$sightingId": {
-      id: "/sightings/$sightingId";
-      path: "/sightings/$sightingId";
-      fullPath: "/sightings/$sightingId";
-      preLoaderRoute: typeof SightingsSightingIdRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/sightings/$sightingId_/edit": {
-      id: "/sightings/$sightingId_/edit";
-      path: "/sightings/$sightingId/edit";
-      fullPath: "/sightings/$sightingId/edit";
-      preLoaderRoute: typeof SightingsSightingIdEditRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/species/': {
+      id: '/species/'
+      path: '/species'
+      fullPath: '/species/'
+      preLoaderRoute: typeof SpeciesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sightings/': {
+      id: '/sightings/'
+      path: '/sightings'
+      fullPath: '/sightings/'
+      preLoaderRoute: typeof SightingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/species/manage': {
+      id: '/species/manage'
+      path: '/species/manage'
+      fullPath: '/species/manage'
+      preLoaderRoute: typeof SpeciesManageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/species/$speciesId': {
+      id: '/species/$speciesId'
+      path: '/species/$speciesId'
+      fullPath: '/species/$speciesId'
+      preLoaderRoute: typeof SpeciesSpeciesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sightings/new': {
+      id: '/sightings/new'
+      path: '/sightings/new'
+      fullPath: '/sightings/new'
+      preLoaderRoute: typeof SightingsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sightings/$sightingId': {
+      id: '/sightings/$sightingId'
+      path: '/sightings/$sightingId'
+      fullPath: '/sightings/$sightingId'
+      preLoaderRoute: typeof SightingsSightingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sightings/$sightingId_/edit': {
+      id: '/sightings/$sightingId_/edit'
+      path: '/sightings/$sightingId/edit'
+      fullPath: '/sightings/$sightingId/edit'
+      preLoaderRoute: typeof SightingsSightingIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -246,7 +246,7 @@ const rootRouteChildren: RootRouteChildren = {
   SightingsIndexRoute: SightingsIndexRoute,
   SpeciesIndexRoute: SpeciesIndexRoute,
   SightingsSightingIdEditRoute: SightingsSightingIdEditRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
