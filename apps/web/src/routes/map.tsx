@@ -48,13 +48,23 @@ function MapPage() {
       mapInstance.removeLayer(heatLayer);
     }
 
+    const count = data.length;
+    const radius = count <= 3 ? 60 : count <= 10 ? 40 : 25;
+    const blur = count <= 3 ? 30 : count <= 10 ? 20 : 15;
+
     const points: [number, number, number?][] = data.map((p) => [p.lat, p.lng, p.weight]);
     heatLayer = L.heatLayer(points, {
-      radius: 25,
-      blur: 15,
+      radius,
+      blur,
+      minOpacity: 0.5,
       maxZoom: 17,
       gradient: { 0.4: "#3b82f6", 0.65: "#84cc16", 1: "#ef4444" },
     }).addTo(mapInstance);
+
+    if (count > 0) {
+      const bounds = L.latLngBounds(data.map((p) => [p.lat, p.lng] as [number, number]));
+      mapInstance.fitBounds(bounds, { padding: [50, 50] });
+    }
   });
 
   return (
