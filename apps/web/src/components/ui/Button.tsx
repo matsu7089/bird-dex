@@ -1,3 +1,4 @@
+import { splitProps } from 'solid-js';
 import type { JSX } from 'solid-js';
 import { cn } from '~/lib/utils';
 
@@ -21,15 +22,15 @@ const sizes: Record<Size, string> = {
 };
 
 export function Button(props: ButtonProps) {
-  const { variant = 'primary', size = 'md', class: className, ...rest } = props;
+  const [local, rest] = splitProps(props, ['variant', 'size', 'class']);
   return (
     <button
       {...rest}
       class={cn(
         'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors cursor-pointer',
-        variants[variant],
-        sizes[size],
-        className,
+        variants[local.variant ?? 'primary'],
+        sizes[local.size ?? 'md'],
+        local.class,
       )}
     />
   );
