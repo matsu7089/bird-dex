@@ -36,9 +36,10 @@ function SightingDetailPage() {
   const [uploadError, setUploadError] = createSignal('');
 
   async function handleDeletePhoto(photoId: string) {
+    if (!confirm('この写真を削除しますか？')) return;
     await apiFetch(`/api/photos/${photoId}`, { method: 'DELETE' });
-    queryClient.invalidateQueries({ queryKey: queryKeys.sightingDetail(sightingId) });
-    queryClient.invalidateQueries({ queryKey: queryKeys.species() });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.sightingDetail(sightingId) });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.species() });
   }
 
   async function handleUploadPhotos() {
