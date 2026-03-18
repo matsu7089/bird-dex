@@ -3,19 +3,22 @@ import type {
   SightingWithPhotos,
   PaginatedResult,
   HeatmapPoint,
-} from '../entities/sighting.js';
+} from "../entities/sighting.js";
 
 export interface SightingFilters {
   speciesId?: string;
   from?: string;
   to?: string;
-  sort?: 'date_desc' | 'date_asc';
+  sort?: "date_desc" | "date_asc";
   page?: number;
   limit?: number;
 }
 
 export interface ISightingRepository {
-  findAllByUserId(userId: string, filters: SightingFilters): Promise<PaginatedResult<SightingWithPhotos>>;
+  findAllByUserId(
+    userId: string,
+    filters: SightingFilters,
+  ): Promise<PaginatedResult<SightingWithPhotos>>;
   findById(id: string, userId: string): Promise<SightingWithPhotos | null>;
   create(data: {
     userId: string;

@@ -1,4 +1,4 @@
-import { Button } from './Button';
+import { Button } from "./Button";
 
 interface PaginationProps {
   page: number;
@@ -13,7 +13,8 @@ export function Pagination(props: PaginationProps) {
   return (
     <div class="flex items-center justify-between gap-4 pt-2">
       <span class="text-sm text-gray-500 dark:text-gray-400">
-        {props.total}件中 {(props.page - 1) * props.limit + 1}–{Math.min(props.page * props.limit, props.total)}件
+        {props.total}件中 {(props.page - 1) * props.limit + 1}–
+        {Math.min(props.page * props.limit, props.total)}件
       </span>
       <div class="flex gap-2">
         <Button

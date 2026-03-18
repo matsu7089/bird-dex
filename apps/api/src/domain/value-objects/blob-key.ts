@@ -6,6 +6,6 @@ export class BlobKey {
   }
 
   thumbnailKey(): string {
-    return this.value.replace(/(\.[^.]+)$/, '_thumb$1');
+    return this.value.replace(/(\.[^.]+)$/, "_thumb$1");
   }
 }

@@ -1,6 +1,6 @@
-import type { ISpeciesRepository } from '../../domain/repositories/species-repository.js';
-import type { IPhotoRepository } from '../../domain/repositories/photo-repository.js';
-import type { PaginatedPhotos } from '../../domain/entities/photo.js';
+import type { ISpeciesRepository } from "../../domain/repositories/species-repository.js";
+import type { IPhotoRepository } from "../../domain/repositories/photo-repository.js";
+import type { PaginatedPhotos } from "../../domain/entities/photo.js";
 
 export class SpeciesNotFoundError extends Error {}
 

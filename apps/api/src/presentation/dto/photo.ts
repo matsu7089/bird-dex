@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const UpdatePhotoSchema = z.object({
   speciesId: z.string().uuid(),

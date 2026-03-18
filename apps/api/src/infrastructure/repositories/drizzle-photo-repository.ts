@@ -1,8 +1,8 @@
-import { and, count, desc, eq } from 'drizzle-orm';
-import type { Db } from '../db/client.js';
-import { photos, sightings, species } from '../db/schema.js';
-import type { IPhotoRepository } from '../../domain/repositories/photo-repository.js';
-import type { Photo, PhotoWithSpecies, PaginatedPhotos } from '../../domain/entities/photo.js';
+import { and, count, desc, eq } from "drizzle-orm";
+import type { Db } from "../db/client.js";
+import { photos, sightings, species } from "../db/schema.js";
+import type { IPhotoRepository } from "../../domain/repositories/photo-repository.js";
+import type { Photo, PhotoWithSpecies, PaginatedPhotos } from "../../domain/entities/photo.js";
 
 export class DrizzlePhotoRepository implements IPhotoRepository {
   constructor(private readonly db: Db) {}
@@ -101,11 +101,7 @@ export class DrizzlePhotoRepository implements IPhotoRepository {
     const updateData: Record<string, unknown> = {};
     if (data.speciesId !== undefined) updateData.speciesId = data.speciesId;
 
-    const rows = await this.db
-      .update(photos)
-      .set(updateData)
-      .where(eq(photos.id, id))
-      .returning();
+    const rows = await this.db.update(photos).set(updateData).where(eq(photos.id, id)).returning();
     return rows[0]!;
   }
 

@@ -1,6 +1,13 @@
-import { Coordinates } from '../../domain/value-objects/coordinates.js';
-import type { ISightingRepository, SightingFilters } from '../../domain/repositories/sighting-repository.js';
-import type { Sighting, SightingWithPhotos, PaginatedResult } from '../../domain/entities/sighting.js';
+import { Coordinates } from "../../domain/value-objects/coordinates.js";
+import type {
+  ISightingRepository,
+  SightingFilters,
+} from "../../domain/repositories/sighting-repository.js";
+import type {
+  Sighting,
+  SightingWithPhotos,
+  PaginatedResult,
+} from "../../domain/entities/sighting.js";
 
 export class SightingNotFoundError extends Error {}
 

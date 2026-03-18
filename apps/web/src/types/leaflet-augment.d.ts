@@ -1,7 +1,7 @@
 // Augment leaflet with heatLayer from leaflet.heat plugin
-import 'leaflet';
+import "leaflet";
 
-declare module 'leaflet' {
+declare module "leaflet" {
   function heatLayer(
     latlngs: Array<[number, number, number?]>,
     options?: {

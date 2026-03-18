@@ -1,8 +1,13 @@
-import type { Photo, PhotoWithSpecies, PaginatedPhotos } from '../entities/photo.js';
+import type { Photo, PhotoWithSpecies, PaginatedPhotos } from "../entities/photo.js";
 
 export interface IPhotoRepository {
   findBySightingId(sightingId: string): Promise<PhotoWithSpecies[]>;
-  findBySpeciesId(speciesId: string, userId: string, page: number, limit: number): Promise<PaginatedPhotos>;
+  findBySpeciesId(
+    speciesId: string,
+    userId: string,
+    page: number,
+    limit: number,
+  ): Promise<PaginatedPhotos>;
   create(data: {
     sightingId: string;
     speciesId: string;

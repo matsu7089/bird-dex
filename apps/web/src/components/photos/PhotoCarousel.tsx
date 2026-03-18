@@ -1,6 +1,6 @@
-import { createSignal, Show } from 'solid-js';
-import type { PhotoWithSpecies } from '~/lib/queries';
-import { Button } from '~/components/ui/Button';
+import { createSignal, Show } from "solid-js";
+import type { PhotoWithSpecies } from "~/lib/queries";
+import { Button } from "~/components/ui/Button";
 
 interface PhotoCarouselProps {
   photos: PhotoWithSpecies[];
@@ -29,13 +29,15 @@ export function PhotoCarousel(props: PhotoCarouselProps) {
         <div class="absolute bottom-0 inset-x-0 flex items-center justify-between bg-black/40 px-4 py-2 text-white">
           <div>
             <p class="text-sm font-medium">{current().speciesName}</p>
-            <p class="text-xs text-gray-300">{index() + 1} / {props.photos.length}</p>
+            <p class="text-xs text-gray-300">
+              {index() + 1} / {props.photos.length}
+            </p>
           </div>
           <div class="flex gap-2">
             {props.onDelete && (
               <button
                 onClick={() => {
-                  if (confirm('この写真を削除しますか？')) props.onDelete!(current().id);
+                  if (confirm("この写真を削除しますか？")) props.onDelete!(current().id);
                 }}
                 class="rounded bg-red-600 px-2 py-1 text-xs hover:bg-red-700"
               >

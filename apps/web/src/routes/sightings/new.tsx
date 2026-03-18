@@ -1,17 +1,17 @@
-import { createFileRoute, useNavigate } from '@tanstack/solid-router';
-import { createQuery, useQueryClient } from '@tanstack/solid-query';
-import { createSignal, Show } from 'solid-js';
-import { apiFetch, apiUpload } from '~/lib/api';
-import { fetchers, queryKeys } from '~/lib/queries';
-import type { Sighting } from '~/lib/queries';
-import { LeafletMap } from '~/components/map/LeafletMap';
-import { PhotoUploadArea } from '~/components/sightings/PhotoUploadArea';
-import type { PendingPhoto, ExifData } from '~/components/sightings/PhotoUploadArea';
-import { Input, Textarea } from '~/components/ui/Input';
-import { Button } from '~/components/ui/Button';
-import { Spinner } from '~/components/ui/Spinner';
+import { createFileRoute, useNavigate } from "@tanstack/solid-router";
+import { createQuery, useQueryClient } from "@tanstack/solid-query";
+import { createSignal, Show } from "solid-js";
+import { apiFetch, apiUpload } from "~/lib/api";
+import { fetchers, queryKeys } from "~/lib/queries";
+import type { Sighting } from "~/lib/queries";
+import { LeafletMap } from "~/components/map/LeafletMap";
+import { PhotoUploadArea } from "~/components/sightings/PhotoUploadArea";
+import type { PendingPhoto, ExifData } from "~/components/sightings/PhotoUploadArea";
+import { Input, Textarea } from "~/components/ui/Input";
+import { Button } from "~/components/ui/Button";
+import { Spinner } from "~/components/ui/Spinner";
 
-export const Route = createFileRoute('/sightings/new')({
+export const Route = createFileRoute("/sightings/new")({
   component: SightingNewPage,
 });
 
@@ -28,10 +28,10 @@ function SightingNewPage() {
   const [sightedAt, setSightedAt] = createSignal(today);
   const [lat, setLat] = createSignal(35.6895);
   const [lng, setLng] = createSignal(139.6917);
-  const [locationName, setLocationName] = createSignal('');
-  const [memo, setMemo] = createSignal('');
+  const [locationName, setLocationName] = createSignal("");
+  const [memo, setMemo] = createSignal("");
   const [photos, setPhotos] = createSignal<PendingPhoto[]>([]);
-  const [error, setError] = createSignal('');
+  const [error, setError] = createSignal("");
   const [loading, setLoading] = createSignal(false);
 
   function handleExif(data: ExifData) {
@@ -42,12 +42,15 @@ function SightingNewPage() {
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
-    if (!sightedAt()) { setError('日付を入力してください'); return; }
-    setError('');
+    if (!sightedAt()) {
+      setError("日付を入力してください");
+      return;
+    }
+    setError("");
     setLoading(true);
     try {
-      const sighting = await apiFetch<Sighting>('/api/sightings', {
-        method: 'POST',
+      const sighting = await apiFetch<Sighting>("/api/sightings", {
+        method: "POST",
         body: JSON.stringify({
           sightedAt: sightedAt(),
           latitude: lat(),
@@ -60,17 +63,17 @@ function SightingNewPage() {
       // Upload photos sequentially
       for (const [index, p] of photos().entries()) {
         const fd = new FormData();
-        fd.append('file', p.file);
-        fd.append('species_id', p.speciesId);
-        fd.append('sort_order', String(index));
+        fd.append("file", p.file);
+        fd.append("species_id", p.speciesId);
+        fd.append("sort_order", String(index));
         await apiUpload(`/api/sightings/${sighting.id}/photos`, fd);
       }
 
       queryClient.invalidateQueries({ queryKey: queryKeys.sightings({}) });
       queryClient.invalidateQueries({ queryKey: queryKeys.species() });
-      navigate({ to: '/sightings/$sightingId', params: { sightingId: sighting.id } });
+      navigate({ to: "/sightings/$sightingId", params: { sightingId: sighting.id } });
     } catch (err) {
-      setError(err instanceof Error ? err.message : '保存に失敗しました');
+      setError(err instanceof Error ? err.message : "保存に失敗しました");
     } finally {
       setLoading(false);
     }
@@ -81,12 +84,18 @@ function SightingNewPage() {
       <h1 class="mb-6 text-2xl font-bold">観察記録を追加</h1>
       <form onSubmit={handleSubmit} class="flex flex-col gap-5">
         <div>
-          <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">写真</label>
+          <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            写真
+          </label>
           <Show
             when={speciesQuery.data && speciesQuery.data.length > 0}
             fallback={
               <p class="text-sm text-gray-500">
-                写真を追加するには先に<a href="/species" class="text-emerald-600 underline">図鑑に種を登録</a>してください。
+                写真を追加するには先に
+                <a href="/species" class="text-emerald-600 underline">
+                  図鑑に種を登録
+                </a>
+                してください。
               </p>
             }
           >
@@ -114,7 +123,10 @@ function SightingNewPage() {
           <LeafletMap
             center={[lat(), lng()]}
             zoom={10}
-            onMapClick={(la, lo) => { setLat(la); setLng(lo); }}
+            onMapClick={(la, lo) => {
+              setLat(la);
+              setLng(lo);
+            }}
             class="h-64 w-full rounded-xl overflow-hidden border border-gray-200"
           />
           <p class="mt-1 text-xs text-gray-500">
@@ -143,7 +155,13 @@ function SightingNewPage() {
 
         <div class="flex gap-3">
           <Button type="submit" disabled={loading()}>
-            {loading() ? <><Spinner class="h-4 w-4" /> 保存中…</> : '保存'}
+            {loading() ? (
+              <>
+                <Spinner class="h-4 w-4" /> 保存中…
+              </>
+            ) : (
+              "保存"
+            )}
           </Button>
           <Button variant="ghost" type="button" onClick={() => history.back()}>
             キャンセル

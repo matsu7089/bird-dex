@@ -1,11 +1,11 @@
-import { createFileRoute, Link } from '@tanstack/solid-router';
-import { createQuery } from '@tanstack/solid-query';
-import { For, Show } from 'solid-js';
-import { fetchers, queryKeys } from '~/lib/queries';
-import { Spinner } from '~/components/ui/Spinner';
-import { formatDate } from '~/lib/utils';
+import { createFileRoute, Link } from "@tanstack/solid-router";
+import { createQuery } from "@tanstack/solid-query";
+import { For, Show } from "solid-js";
+import { fetchers, queryKeys } from "~/lib/queries";
+import { Spinner } from "~/components/ui/Spinner";
+import { formatDate } from "~/lib/utils";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: DashboardPage,
 });
 
@@ -16,12 +16,11 @@ function DashboardPage() {
   }));
 
   const sightingsQuery = createQuery(() => ({
-    queryKey: queryKeys.sightings({ limit: 5, sort: 'date_desc' }),
-    queryFn: () => fetchers.sightingsList({ limit: 5, sort: 'date_desc' }),
+    queryKey: queryKeys.sightings({ limit: 5, sort: "date_desc" }),
+    queryFn: () => fetchers.sightingsList({ limit: 5, sort: "date_desc" }),
   }));
 
-  const totalPhotos = () =>
-    speciesQuery.data?.reduce((sum, s) => sum + s.photoCount, 0) ?? 0;
+  const totalPhotos = () => speciesQuery.data?.reduce((sum, s) => sum + s.photoCount, 0) ?? 0;
 
   return (
     <div class="flex flex-col gap-8">
@@ -36,13 +35,13 @@ function DashboardPage() {
       <div class="grid gap-4 sm:grid-cols-3">
         <StatCard
           label="登録種数"
-          value={speciesQuery.isPending ? null : speciesQuery.data?.length ?? 0}
+          value={speciesQuery.isPending ? null : (speciesQuery.data?.length ?? 0)}
           icon="🦜"
           href="/species"
         />
         <StatCard
           label="観察記録数"
-          value={sightingsQuery.isPending ? null : sightingsQuery.data?.total ?? 0}
+          value={sightingsQuery.isPending ? null : (sightingsQuery.data?.total ?? 0)}
           icon="📋"
           href="/sightings"
         />
@@ -58,12 +57,17 @@ function DashboardPage() {
       <div>
         <div class="mb-3 flex items-center justify-between">
           <h2 class="text-xl font-semibold">最近の観察記録</h2>
-          <Link to="/sightings" class="text-sm text-emerald-600 hover:underline dark:text-emerald-400">
+          <Link
+            to="/sightings"
+            class="text-sm text-emerald-600 hover:underline dark:text-emerald-400"
+          >
             すべて見る →
           </Link>
         </div>
         <Show when={sightingsQuery.isPending}>
-          <div class="flex justify-center py-8"><Spinner /></div>
+          <div class="flex justify-center py-8">
+            <Spinner />
+          </div>
         </Show>
         <Show when={sightingsQuery.data}>
           {(data) => (
@@ -72,7 +76,9 @@ function DashboardPage() {
               fallback={
                 <div class="rounded-xl border border-dashed border-gray-300 py-8 text-center text-gray-500">
                   まだ観察記録がありません。
-                  <Link to="/sightings/new" class="ml-1 text-emerald-600 underline">記録を追加</Link>
+                  <Link to="/sightings/new" class="ml-1 text-emerald-600 underline">
+                    記録を追加
+                  </Link>
                 </div>
               }
             >
@@ -96,7 +102,9 @@ function DashboardPage() {
                         )}
                       </div>
                       <div class="min-w-0 flex-1">
-                        <p class="font-medium text-gray-900 dark:text-gray-100">{formatDate(s.sightedAt)}</p>
+                        <p class="font-medium text-gray-900 dark:text-gray-100">
+                          {formatDate(s.sightedAt)}
+                        </p>
                         {s.locationName && (
                           <p class="truncate text-sm text-gray-500">📍 {s.locationName}</p>
                         )}
@@ -124,7 +132,7 @@ interface StatCardProps {
 function StatCard(props: StatCardProps) {
   return (
     <Link
-      to={props.href as '/'}
+      to={props.href as "/"}
       class="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800 no-underline"
     >
       <span class="text-3xl">{props.icon}</span>

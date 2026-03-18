@@ -1,14 +1,14 @@
-import 'dotenv/config';
-import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
-import { logger } from 'hono/logger';
-import { db } from './infrastructure/db/client.js';
-import { sql } from 'drizzle-orm';
-import { createAuthRoutes } from './presentation/routes/auth.js';
-import { createSpeciesRoutes } from './presentation/routes/species.js';
-import { createSightingsRoutes } from './presentation/routes/sightings.js';
-import { createPhotosRoutes } from './presentation/routes/photos.js';
+import "dotenv/config";
+import { serve } from "@hono/node-server";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { db } from "./infrastructure/db/client.js";
+import { sql } from "drizzle-orm";
+import { createAuthRoutes } from "./presentation/routes/auth.js";
+import { createSpeciesRoutes } from "./presentation/routes/species.js";
+import { createSightingsRoutes } from "./presentation/routes/sightings.js";
+import { createPhotosRoutes } from "./presentation/routes/photos.js";
 import {
   userRepository,
   githubOAuthClient,
@@ -20,49 +20,57 @@ import {
   photoRepository,
   blobStorage,
   getSpeciesGallery,
-} from './di/index.js';
-import { createAuthMiddleware } from './presentation/middleware/auth.js';
+} from "./di/index.js";
+import { createAuthMiddleware } from "./presentation/middleware/auth.js";
 
 const app = new Hono();
 
 // ─── Global middleware ────────────────────────────────────────────────────────
 
-app.use('*', logger());
+app.use("*", logger());
 
 app.use(
-  '*',
+  "*",
   cors({
-    origin: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
+    origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
     credentials: true,
   }),
 );
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
-app.route('/auth', createAuthRoutes(userRepository, githubOAuthClient, authenticateWithGithub));
+app.route("/auth", createAuthRoutes(userRepository, githubOAuthClient, authenticateWithGithub));
 
 const authMiddleware = createAuthMiddleware(userRepository);
-app.route('/api/species', createSpeciesRoutes(manageSpecies, authMiddleware, getSpeciesGallery));
-app.route('/api/sightings', createSightingsRoutes({ registerSighting, getHeatmapData, authMiddleware }));
+app.route("/api/species", createSpeciesRoutes(manageSpecies, authMiddleware, getSpeciesGallery));
+app.route(
+  "/api/sightings",
+  createSightingsRoutes({ registerSighting, getHeatmapData, authMiddleware }),
+);
 
-const photosRouter = createPhotosRoutes(addPhotoToSighting, photoRepository, blobStorage, authMiddleware);
-app.route('/api', photosRouter);
+const photosRouter = createPhotosRoutes(
+  addPhotoToSighting,
+  photoRepository,
+  blobStorage,
+  authMiddleware,
+);
+app.route("/api", photosRouter);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 
-app.get('/health', async (c) => {
+app.get("/health", async (c) => {
   try {
     await db.execute(sql`SELECT 1`);
     return c.json({
-      status: 'ok',
-      db: 'connected',
+      status: "ok",
+      db: "connected",
       timestamp: new Date().toISOString(),
     });
   } catch {
     return c.json(
       {
-        status: 'error',
-        db: 'disconnected',
+        status: "error",
+        db: "disconnected",
         timestamp: new Date().toISOString(),
       },
       503,
@@ -74,7 +82,7 @@ app.get('/health', async (c) => {
 
 app.notFound((c) => {
   return c.json(
-    { error: 'Not Found', message: 'The requested resource does not exist.', statusCode: 404 },
+    { error: "Not Found", message: "The requested resource does not exist.", statusCode: 404 },
     404,
   );
 });
@@ -82,9 +90,9 @@ app.notFound((c) => {
 // ─── Global error handler ─────────────────────────────────────────────────────
 
 app.onError((err, c) => {
-  console.error('[unhandled error]', err);
+  console.error("[unhandled error]", err);
   return c.json(
-    { error: 'Internal Server Error', message: 'An unexpected error occurred.', statusCode: 500 },
+    { error: "Internal Server Error", message: "An unexpected error occurred.", statusCode: 500 },
     500,
   );
 });

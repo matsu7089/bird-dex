@@ -1,4 +1,4 @@
-import type { Species, SpeciesWithCount } from '../entities/species.js';
+import type { Species, SpeciesWithCount } from "../entities/species.js";
 
 export interface ISpeciesRepository {
   findAllByUserId(userId: string): Promise<SpeciesWithCount[]>;
@@ -12,7 +12,12 @@ export interface ISpeciesRepository {
   update(
     id: string,
     userId: string,
-    data: { name?: string; description?: string | null; sortOrder?: number; bestPhotoId?: string | null },
+    data: {
+      name?: string;
+      description?: string | null;
+      sortOrder?: number;
+      bestPhotoId?: string | null;
+    },
   ): Promise<Species>;
   setBestPhoto(id: string, userId: string, photoId: string | null): Promise<Species>;
   delete(id: string, userId: string): Promise<void>;

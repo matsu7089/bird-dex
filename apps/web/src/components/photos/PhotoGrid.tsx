@@ -1,6 +1,6 @@
-import { For, Show } from 'solid-js';
-import type { PhotoWithSpecies } from '~/lib/queries';
-import { formatDate } from '~/lib/utils';
+import { For, Show } from "solid-js";
+import type { PhotoWithSpecies } from "~/lib/queries";
+import { formatDate } from "~/lib/utils";
 
 interface PhotoGridProps {
   photos: PhotoWithSpecies[];

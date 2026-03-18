@@ -1,5 +1,5 @@
-import type { ISightingRepository } from '../../domain/repositories/sighting-repository.js';
-import type { HeatmapPoint } from '../../domain/entities/sighting.js';
+import type { ISightingRepository } from "../../domain/repositories/sighting-repository.js";
+import type { HeatmapPoint } from "../../domain/entities/sighting.js";
 
 export class GetHeatmapData {
   constructor(private readonly repo: ISightingRepository) {}

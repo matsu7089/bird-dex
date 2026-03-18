@@ -1,6 +1,6 @@
-import { Link } from '@tanstack/solid-router';
-import type { SightingWithPhotos } from '~/lib/queries';
-import { formatDate } from '~/lib/utils';
+import { Link } from "@tanstack/solid-router";
+import type { SightingWithPhotos } from "~/lib/queries";
+import { formatDate } from "~/lib/utils";
 
 interface SightingCardProps {
   sighting: SightingWithPhotos;
@@ -41,7 +41,7 @@ export function SightingCard(props: SightingCardProps) {
         )}
         {s().photos.length > 0 && (
           <p class="mt-1 text-xs text-emerald-700 dark:text-emerald-400">
-            {[...new Set(s().photos.map((p) => p.speciesName))].join('・')}
+            {[...new Set(s().photos.map((p) => p.speciesName))].join("・")}
           </p>
         )}
       </div>

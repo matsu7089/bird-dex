@@ -1,16 +1,16 @@
-import { and, count, eq, ne } from 'drizzle-orm';
-import { alias } from 'drizzle-orm/pg-core';
-import type { Db } from '../db/client.js';
-import { species, photos } from '../db/schema.js';
-import type { ISpeciesRepository } from '../../domain/repositories/species-repository.js';
-import type { Species, SpeciesWithCount } from '../../domain/entities/species.js';
-import { SpeciesHasPhotosError } from '../../application/use-cases/manage-species.js';
+import { and, count, eq, ne } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
+import type { Db } from "../db/client.js";
+import { species, photos } from "../db/schema.js";
+import type { ISpeciesRepository } from "../../domain/repositories/species-repository.js";
+import type { Species, SpeciesWithCount } from "../../domain/entities/species.js";
+import { SpeciesHasPhotosError } from "../../application/use-cases/manage-species.js";
 
 export class DrizzleSpeciesRepository implements ISpeciesRepository {
   constructor(private readonly db: Db) {}
 
   async findAllByUserId(userId: string): Promise<SpeciesWithCount[]> {
-    const bestPhoto = alias(photos, 'best_photo');
+    const bestPhoto = alias(photos, "best_photo");
     const rows = await this.db
       .select({
         id: species.id,
@@ -83,7 +83,12 @@ export class DrizzleSpeciesRepository implements ISpeciesRepository {
   async update(
     id: string,
     userId: string,
-    data: { name?: string; description?: string | null; sortOrder?: number; bestPhotoId?: string | null },
+    data: {
+      name?: string;
+      description?: string | null;
+      sortOrder?: number;
+      bestPhotoId?: string | null;
+    },
   ): Promise<Species> {
     const rows = await this.db
       .update(species)
@@ -100,12 +105,10 @@ export class DrizzleSpeciesRepository implements ISpeciesRepository {
       .where(eq(photos.speciesId, id));
 
     if (Number(value) > 0) {
-      throw new SpeciesHasPhotosError('Cannot delete species that has photos');
+      throw new SpeciesHasPhotosError("Cannot delete species that has photos");
     }
 
-    await this.db
-      .delete(species)
-      .where(and(eq(species.id, id), eq(species.userId, userId)));
+    await this.db.delete(species).where(and(eq(species.id, id), eq(species.userId, userId)));
   }
 
   async existsByName(userId: string, name: string, excludeId?: string): Promise<boolean> {

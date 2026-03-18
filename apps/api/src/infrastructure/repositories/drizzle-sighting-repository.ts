@@ -1,13 +1,16 @@
-import { and, asc, count, desc, eq, gte, inArray, lte } from 'drizzle-orm';
-import type { Db } from '../db/client.js';
-import { sightings, photos, species } from '../db/schema.js';
-import type { ISightingRepository, SightingFilters } from '../../domain/repositories/sighting-repository.js';
+import { and, asc, count, desc, eq, gte, inArray, lte } from "drizzle-orm";
+import type { Db } from "../db/client.js";
+import { sightings, photos, species } from "../db/schema.js";
+import type {
+  ISightingRepository,
+  SightingFilters,
+} from "../../domain/repositories/sighting-repository.js";
 import type {
   Sighting,
   SightingWithPhotos,
   PaginatedResult,
   HeatmapPoint,
-} from '../../domain/entities/sighting.js';
+} from "../../domain/entities/sighting.js";
 
 export class DrizzleSightingRepository implements ISightingRepository {
   constructor(private readonly db: Db) {}
@@ -40,9 +43,7 @@ export class DrizzleSightingRepository implements ISightingRepository {
       .where(where);
 
     const orderBy =
-      filters.sort === 'date_asc'
-        ? asc(sightings.sightedAt)
-        : desc(sightings.sightedAt);
+      filters.sort === "date_asc" ? asc(sightings.sightedAt) : desc(sightings.sightedAt);
 
     const rows = await this.db
       .select()
@@ -171,9 +172,7 @@ export class DrizzleSightingRepository implements ISightingRepository {
   }
 
   async delete(id: string, userId: string): Promise<void> {
-    await this.db
-      .delete(sightings)
-      .where(and(eq(sightings.id, id), eq(sightings.userId, userId)));
+    await this.db.delete(sightings).where(and(eq(sightings.id, id), eq(sightings.userId, userId)));
   }
 
   async getHeatmapData(userId: string, speciesId?: string): Promise<HeatmapPoint[]> {

@@ -1,4 +1,4 @@
-import { GitHub, generateState } from 'arctic';
+import { GitHub, generateState } from "arctic";
 
 export interface GitHubUser {
   id: number;
@@ -15,17 +15,17 @@ export class GitHubOAuthClient {
 
   createAuthorizationURL(): { url: URL; state: string } {
     const state = generateState();
-    const url = this.github.createAuthorizationURL(state, ['read:user']);
+    const url = this.github.createAuthorizationURL(state, ["read:user"]);
     return { url, state };
   }
 
   async validateCallback(code: string): Promise<{ accessToken: string; githubUser: GitHubUser }> {
     const tokens = await this.github.validateAuthorizationCode(code);
     const accessToken = tokens.accessToken();
-    const res = await fetch('https://api.github.com/user', {
+    const res = await fetch("https://api.github.com/user", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'User-Agent': 'bird-dex',
+        "User-Agent": "bird-dex",
       },
     });
     if (!res.ok) {

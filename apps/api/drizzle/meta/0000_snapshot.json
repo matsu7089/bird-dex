@@ -88,12 +88,8 @@
           "name": "photos_sighting_id_sightings_id_fk",
           "tableFrom": "photos",
           "tableTo": "sightings",
-          "columnsFrom": [
-            "sighting_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sighting_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -101,12 +97,8 @@
           "name": "photos_species_id_species_id_fk",
           "tableFrom": "photos",
           "tableTo": "species",
-          "columnsFrom": [
-            "species_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["species_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -207,12 +199,8 @@
           "name": "sightings_user_id_users_id_fk",
           "tableFrom": "sightings",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -329,12 +317,8 @@
           "name": "species_user_id_users_id_fk",
           "tableFrom": "species",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -342,12 +326,8 @@
           "name": "species_best_photo_id_photos_id_fk",
           "tableFrom": "species",
           "tableTo": "photos",
-          "columnsFrom": [
-            "best_photo_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["best_photo_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -402,9 +382,7 @@
         "users_github_id_unique": {
           "name": "users_github_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "github_id"
-          ]
+          "columns": ["github_id"]
         }
       },
       "policies": {},

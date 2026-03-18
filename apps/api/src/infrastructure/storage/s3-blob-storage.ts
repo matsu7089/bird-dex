@@ -1,5 +1,5 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
-import type { IBlobStorage } from '../../domain/repositories/blob-storage.js';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import type { IBlobStorage } from "../../domain/repositories/blob-storage.js";
 
 export class S3BlobStorage implements IBlobStorage {
   private readonly client: S3Client;
@@ -16,7 +16,7 @@ export class S3BlobStorage implements IBlobStorage {
     this.bucket = config.bucket;
     this.client = new S3Client({
       endpoint: config.endpoint,
-      region: 'us-east-1',
+      region: "us-east-1",
       credentials: {
         accessKeyId: config.accessKeyId,
         secretAccessKey: config.secretAccessKey,

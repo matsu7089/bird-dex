@@ -1,9 +1,9 @@
-import { createSignal } from 'solid-js';
-import type { Species } from '~/lib/queries';
-import { apiFetch } from '~/lib/api';
-import { Modal } from '~/components/ui/Modal';
-import { Input, Textarea } from '~/components/ui/Input';
-import { Button } from '~/components/ui/Button';
+import { createSignal } from "solid-js";
+import type { Species } from "~/lib/queries";
+import { apiFetch } from "~/lib/api";
+import { Modal } from "~/components/ui/Modal";
+import { Input, Textarea } from "~/components/ui/Input";
+import { Button } from "~/components/ui/Button";
 
 interface SpeciesFormProps {
   open: boolean;
@@ -14,39 +14,42 @@ interface SpeciesFormProps {
 
 export function SpeciesForm(props: SpeciesFormProps) {
   const isEdit = () => !!props.initial;
-  const [name, setName] = createSignal(props.initial?.name ?? '');
-  const [description, setDescription] = createSignal(props.initial?.description ?? '');
-  const [error, setError] = createSignal('');
+  const [name, setName] = createSignal(props.initial?.name ?? "");
+  const [description, setDescription] = createSignal(props.initial?.description ?? "");
+  const [error, setError] = createSignal("");
   const [loading, setLoading] = createSignal(false);
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
-    if (!name().trim()) { setError('名前を入力してください'); return; }
-    setError('');
+    if (!name().trim()) {
+      setError("名前を入力してください");
+      return;
+    }
+    setError("");
     setLoading(true);
     try {
       if (isEdit()) {
         await apiFetch(`/api/species/${props.initial!.id}`, {
-          method: 'PUT',
+          method: "PUT",
           body: JSON.stringify({ name: name().trim(), description: description().trim() || null }),
         });
       } else {
-        await apiFetch('/api/species', {
-          method: 'POST',
+        await apiFetch("/api/species", {
+          method: "POST",
           body: JSON.stringify({ name: name().trim(), description: description().trim() || null }),
         });
       }
       props.onSaved();
       props.onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : '保存に失敗しました');
+      setError(err instanceof Error ? err.message : "保存に失敗しました");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <Modal open={props.open} onClose={props.onClose} title={isEdit() ? '種を編集' : '種を追加'}>
+    <Modal open={props.open} onClose={props.onClose} title={isEdit() ? "種を編集" : "種を追加"}>
       <form onSubmit={handleSubmit} class="flex flex-col gap-4">
         <Input
           id="species-name"
@@ -65,9 +68,11 @@ export function SpeciesForm(props: SpeciesFormProps) {
         />
         {error() && <p class="text-sm text-red-600">{error()}</p>}
         <div class="flex justify-end gap-2 pt-2">
-          <Button variant="ghost" type="button" onClick={props.onClose}>キャンセル</Button>
+          <Button variant="ghost" type="button" onClick={props.onClose}>
+            キャンセル
+          </Button>
           <Button type="submit" disabled={loading()}>
-            {loading() ? '保存中…' : '保存'}
+            {loading() ? "保存中…" : "保存"}
           </Button>
         </div>
       </form>

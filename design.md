@@ -299,15 +299,15 @@ services:
       POSTGRES_USER: birdlog
       POSTGRES_PASSWORD: birdlog
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   rustfs:
     image: rustfs/rustfs:latest
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - "9000:9000"
+      - "9001:9001"
     environment:
       RUSTFS_ROOT_USER: rustfsadmin
       RUSTFS_ROOT_PASSWORD: rustfsadmin
@@ -329,7 +329,7 @@ services:
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
       SESSION_SECRET: ${SESSION_SECRET}
     ports:
-      - '3000:3000'
+      - "3000:3000"
     depends_on:
       - db
       - rustfs
@@ -339,7 +339,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile.web
     ports:
-      - '5173:5173'
+      - "5173:5173"
     depends_on:
       - api
 

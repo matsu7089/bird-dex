@@ -1,4 +1,4 @@
-import type { PhotoWithSpecies } from './photo.js';
+import type { PhotoWithSpecies } from "./photo.js";
 
 export type { PhotoWithSpecies };
 
@@ -6,8 +6,8 @@ export interface Sighting {
   id: string;
   userId: string;
   memo: string | null;
-  sightedAt: string;       // DATE → drizzle returns string 'YYYY-MM-DD'
-  latitude: string;        // DECIMAL → drizzle returns string
+  sightedAt: string; // DATE → drizzle returns string 'YYYY-MM-DD'
+  latitude: string; // DECIMAL → drizzle returns string
   longitude: string;
   locationName: string | null;
   createdAt: Date;

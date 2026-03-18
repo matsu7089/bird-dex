@@ -7,11 +7,11 @@ services:
       POSTGRES_USER: birdlog
       POSTGRES_PASSWORD: birdlog
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U birdlog']
+      test: ["CMD-SHELL", "pg_isready -U birdlog"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -20,8 +20,8 @@ services:
     image: rustfs/rustfs:latest
     restart: unless-stopped
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - "9000:9000"
+      - "9001:9001"
     environment:
       RUSTFS_ROOT_USER: rustfsadmin
       RUSTFS_ROOT_PASSWORD: rustfsadmin
@@ -30,7 +30,7 @@ services:
       - rustfslogs:/logs
       - ./init-rustfs.sh:/init-rustfs.sh:ro
     healthcheck:
-      test: ['CMD-SHELL', 'curl -sf --max-time 3 http://localhost:9000/ 2>/dev/null; exit 0']
+      test: ["CMD-SHELL", "curl -sf --max-time 3 http://localhost:9000/ 2>/dev/null; exit 0"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -41,7 +41,7 @@ services:
     depends_on:
       rustfs:
         condition: service_healthy
-    entrypoint: ['/bin/sh', '-c']
+    entrypoint: ["/bin/sh", "-c"]
     command:
       - |
         mc alias set local http://rustfs:9000 rustfsadmin rustfsadmin

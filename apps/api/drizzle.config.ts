@@ -1,11 +1,11 @@
-import { defineConfig } from 'drizzle-kit';
+import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
-  dialect: 'postgresql',
-  schema: './src/infrastructure/db/schema.ts',
-  out: './drizzle',
+  dialect: "postgresql",
+  schema: "./src/infrastructure/db/schema.ts",
+  out: "./drizzle",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? 'postgres://birdlog:birdlog@localhost:5432/birdlog',
+    url: process.env.DATABASE_URL ?? "postgres://birdlog:birdlog@localhost:5432/birdlog",
   },
   verbose: true,
   strict: true,

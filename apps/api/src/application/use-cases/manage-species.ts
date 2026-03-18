@@ -1,6 +1,6 @@
-import { SpeciesName } from '../../domain/value-objects/species-name.js';
-import type { ISpeciesRepository } from '../../domain/repositories/species-repository.js';
-import type { Species, SpeciesWithCount } from '../../domain/entities/species.js';
+import { SpeciesName } from "../../domain/value-objects/species-name.js";
+import type { ISpeciesRepository } from "../../domain/repositories/species-repository.js";
+import type { Species, SpeciesWithCount } from "../../domain/entities/species.js";
 
 export class DuplicateSpeciesNameError extends Error {}
 export class SpeciesHasPhotosError extends Error {}
@@ -25,7 +25,8 @@ export class ManageSpecies {
   ): Promise<Species> {
     const speciesName = new SpeciesName(input.name);
     const exists = await this.repo.existsByName(userId, speciesName.value);
-    if (exists) throw new DuplicateSpeciesNameError(`Species name already exists: ${speciesName.value}`);
+    if (exists)
+      throw new DuplicateSpeciesNameError(`Species name already exists: ${speciesName.value}`);
     return this.repo.create({
       userId,
       name: speciesName.value,
@@ -47,7 +48,8 @@ export class ManageSpecies {
     if (input.name !== undefined) {
       const speciesName = new SpeciesName(input.name);
       const exists = await this.repo.existsByName(userId, speciesName.value, id);
-      if (exists) throw new DuplicateSpeciesNameError(`Species name already exists: ${speciesName.value}`);
+      if (exists)
+        throw new DuplicateSpeciesNameError(`Species name already exists: ${speciesName.value}`);
       data.name = speciesName.value;
     }
     if (input.description !== undefined) data.description = input.description;

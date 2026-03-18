@@ -1,13 +1,13 @@
-import { createFileRoute } from '@tanstack/solid-router';
-import { createQuery, useQueryClient } from '@tanstack/solid-query';
-import { createSignal, For, onMount, onCleanup, Show } from 'solid-js';
-import Sortable from 'sortablejs';
-import { apiFetch } from '~/lib/api';
-import { fetchers, queryKeys } from '~/lib/queries';
-import { Button } from '~/components/ui/Button';
-import { Spinner } from '~/components/ui/Spinner';
+import { createFileRoute } from "@tanstack/solid-router";
+import { createQuery, useQueryClient } from "@tanstack/solid-query";
+import { createSignal, For, onMount, onCleanup, Show } from "solid-js";
+import Sortable from "sortablejs";
+import { apiFetch } from "~/lib/api";
+import { fetchers, queryKeys } from "~/lib/queries";
+import { Button } from "~/components/ui/Button";
+import { Spinner } from "~/components/ui/Spinner";
 
-export const Route = createFileRoute('/species/manage')({
+export const Route = createFileRoute("/species/manage")({
   component: SpeciesManagePage,
 });
 
@@ -20,30 +20,30 @@ function SpeciesManagePage() {
 
   let tbodyRef!: HTMLTableSectionElement;
   const [saving, setSaving] = createSignal(false);
-  const [error, setError] = createSignal('');
+  const [error, setError] = createSignal("");
 
   onMount(() => {
     const sortable = Sortable.create(tbodyRef, {
       animation: 150,
-      handle: '.drag-handle',
+      handle: ".drag-handle",
       onEnd: async () => {
-        const ids = Array.from(tbodyRef.querySelectorAll('tr[data-id]')).map(
+        const ids = Array.from(tbodyRef.querySelectorAll("tr[data-id]")).map(
           (el) => (el as HTMLElement).dataset.id!,
         );
         setSaving(true);
-        setError('');
+        setError("");
         try {
           await Promise.all(
             ids.map((id, index) =>
               apiFetch(`/api/species/${id}`, {
-                method: 'PUT',
+                method: "PUT",
                 body: JSON.stringify({ sortOrder: index }),
               }),
             ),
           );
           queryClient.invalidateQueries({ queryKey: queryKeys.species() });
         } catch {
-          setError('並び替えの保存に失敗しました');
+          setError("並び替えの保存に失敗しました");
         } finally {
           setSaving(false);
         }
@@ -55,10 +55,10 @@ function SpeciesManagePage() {
   async function handleDelete(id: string, name: string) {
     if (!confirm(`「${name}」を削除しますか？（写真が紐づいている場合は削除できません）`)) return;
     try {
-      await apiFetch(`/api/species/${id}`, { method: 'DELETE' });
+      await apiFetch(`/api/species/${id}`, { method: "DELETE" });
       queryClient.invalidateQueries({ queryKey: queryKeys.species() });
     } catch (err) {
-      alert(err instanceof Error ? err.message : '削除に失敗しました');
+      alert(err instanceof Error ? err.message : "削除に失敗しました");
     }
   }
 
@@ -74,7 +74,9 @@ function SpeciesManagePage() {
       <p class="mb-4 text-sm text-gray-500">行をドラッグして表示順を変更できます。</p>
 
       <Show when={query.isPending}>
-        <div class="flex justify-center py-12"><Spinner /></div>
+        <div class="flex justify-center py-12">
+          <Spinner />
+        </div>
       </Show>
       <Show when={query.data}>
         <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
@@ -82,9 +84,15 @@ function SpeciesManagePage() {
             <thead class="bg-gray-50 dark:bg-gray-800">
               <tr>
                 <th class="w-8 px-3 py-3"></th>
-                <th class="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">名前</th>
-                <th class="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">写真数</th>
-                <th class="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">順序</th>
+                <th class="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">
+                  名前
+                </th>
+                <th class="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">
+                  写真数
+                </th>
+                <th class="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">
+                  順序
+                </th>
                 <th class="px-4 py-3"></th>
               </tr>
             </thead>

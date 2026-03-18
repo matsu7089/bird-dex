@@ -1,8 +1,8 @@
-import { eq } from 'drizzle-orm';
-import type { Db } from '../db/client.js';
-import { users } from '../db/schema.js';
-import type { IUserRepository } from '../../domain/repositories/user-repository.js';
-import type { User } from '../../domain/entities/user.js';
+import { eq } from "drizzle-orm";
+import type { Db } from "../db/client.js";
+import { users } from "../db/schema.js";
+import type { IUserRepository } from "../../domain/repositories/user-repository.js";
+import type { User } from "../../domain/entities/user.js";
 
 export class DrizzleUserRepository implements IUserRepository {
   constructor(private readonly db: Db) {}
@@ -17,7 +17,11 @@ export class DrizzleUserRepository implements IUserRepository {
     return rows[0] ?? null;
   }
 
-  async upsert(data: { githubId: string; username: string; avatarUrl?: string | null }): Promise<User> {
+  async upsert(data: {
+    githubId: string;
+    username: string;
+    avatarUrl?: string | null;
+  }): Promise<User> {
     const rows = await this.db
       .insert(users)
       .values({

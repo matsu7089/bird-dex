@@ -48,7 +48,7 @@ export interface SightingDto {
   userId: string;
   memo: string | null;
   sightedAt: string; // YYYY-MM-DD
-  latitude: string;  // DECIMAL returned as string to avoid float imprecision
+  latitude: string; // DECIMAL returned as string to avoid float imprecision
   longitude: string;
   locationName: string | null;
   photos: PhotoDto[];

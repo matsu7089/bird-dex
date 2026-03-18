@@ -1,14 +1,14 @@
-import { createFileRoute, useNavigate } from '@tanstack/solid-router';
-import { createQuery, useQueryClient } from '@tanstack/solid-query';
-import { createSignal, Show } from 'solid-js';
-import { apiFetch } from '~/lib/api';
-import { fetchers, queryKeys } from '~/lib/queries';
-import { LeafletMap } from '~/components/map/LeafletMap';
-import { Input, Textarea } from '~/components/ui/Input';
-import { Button } from '~/components/ui/Button';
-import { Spinner } from '~/components/ui/Spinner';
+import { createFileRoute, useNavigate } from "@tanstack/solid-router";
+import { createQuery, useQueryClient } from "@tanstack/solid-query";
+import { createSignal, Show } from "solid-js";
+import { apiFetch } from "~/lib/api";
+import { fetchers, queryKeys } from "~/lib/queries";
+import { LeafletMap } from "~/components/map/LeafletMap";
+import { Input, Textarea } from "~/components/ui/Input";
+import { Button } from "~/components/ui/Button";
+import { Spinner } from "~/components/ui/Spinner";
 
-export const Route = createFileRoute('/sightings/$sightingId_/edit')({
+export const Route = createFileRoute("/sightings/$sightingId_/edit")({
   component: SightingEditPage,
 });
 
@@ -27,7 +27,9 @@ function SightingEditPage() {
       when={query.data}
       fallback={
         <Show when={query.isPending}>
-          <div class="flex justify-center py-12"><Spinner /></div>
+          <div class="flex justify-center py-12">
+            <Spinner />
+          </div>
         </Show>
       }
     >
@@ -35,18 +37,18 @@ function SightingEditPage() {
         const [sightedAt, setSightedAt] = createSignal(sighting().sightedAt);
         const [lat, setLat] = createSignal(parseFloat(sighting().latitude));
         const [lng, setLng] = createSignal(parseFloat(sighting().longitude));
-        const [locationName, setLocationName] = createSignal(sighting().locationName ?? '');
-        const [memo, setMemo] = createSignal(sighting().memo ?? '');
-        const [error, setError] = createSignal('');
+        const [locationName, setLocationName] = createSignal(sighting().locationName ?? "");
+        const [memo, setMemo] = createSignal(sighting().memo ?? "");
+        const [error, setError] = createSignal("");
         const [loading, setLoading] = createSignal(false);
 
         async function handleSubmit(e: Event) {
           e.preventDefault();
-          setError('');
+          setError("");
           setLoading(true);
           try {
             await apiFetch(`/api/sightings/${sightingId}`, {
-              method: 'PUT',
+              method: "PUT",
               body: JSON.stringify({
                 sightedAt: sightedAt(),
                 latitude: lat(),
@@ -57,9 +59,9 @@ function SightingEditPage() {
             });
             queryClient.invalidateQueries({ queryKey: queryKeys.sightingDetail(sightingId) });
             queryClient.invalidateQueries({ queryKey: queryKeys.sightings({}) });
-            navigate({ to: '/sightings/$sightingId', params: { sightingId } });
+            navigate({ to: "/sightings/$sightingId", params: { sightingId } });
           } catch (err) {
-            setError(err instanceof Error ? err.message : '保存に失敗しました');
+            setError(err instanceof Error ? err.message : "保存に失敗しました");
           } finally {
             setLoading(false);
           }
@@ -84,7 +86,10 @@ function SightingEditPage() {
                 <LeafletMap
                   center={[lat(), lng()]}
                   zoom={12}
-                  onMapClick={(la, lo) => { setLat(la); setLng(lo); }}
+                  onMapClick={(la, lo) => {
+                    setLat(la);
+                    setLng(lo);
+                  }}
                   class="h-64 w-full rounded-xl overflow-hidden border border-gray-200"
                 />
                 <p class="mt-1 text-xs text-gray-500">
@@ -112,7 +117,7 @@ function SightingEditPage() {
 
               <div class="flex gap-3">
                 <Button type="submit" disabled={loading()}>
-                  {loading() ? '保存中…' : '保存'}
+                  {loading() ? "保存中…" : "保存"}
                 </Button>
                 <Button variant="ghost" type="button" onClick={() => history.back()}>
                   キャンセル

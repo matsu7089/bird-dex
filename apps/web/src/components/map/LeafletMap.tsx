@@ -1,5 +1,5 @@
-import { onMount, onCleanup, createEffect } from 'solid-js';
-import L from 'leaflet';
+import { onMount, onCleanup, createEffect } from "solid-js";
+import L from "leaflet";
 
 interface LeafletMapProps {
   center: [number, number];
@@ -16,12 +16,12 @@ export function LeafletMap(props: LeafletMapProps) {
 
   onMount(() => {
     map = L.map(containerRef).setView(props.center, props.zoom);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
     if (props.onMapClick) {
-      map.on('click', (e: L.LeafletMouseEvent) => props.onMapClick!(e.latlng.lat, e.latlng.lng));
+      map.on("click", (e: L.LeafletMouseEvent) => props.onMapClick!(e.latlng.lat, e.latlng.lng));
     }
 
     props.onMapReady?.(map);
@@ -34,9 +34,6 @@ export function LeafletMap(props: LeafletMapProps) {
   });
 
   return (
-    <div
-      ref={containerRef!}
-      class={props.class ?? 'h-64 w-full rounded-xl overflow-hidden'}
-    />
+    <div ref={containerRef!} class={props.class ?? "h-64 w-full rounded-xl overflow-hidden"} />
   );
 }

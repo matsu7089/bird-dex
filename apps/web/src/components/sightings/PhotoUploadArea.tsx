@@ -1,6 +1,6 @@
-import { createSignal, For, Show } from 'solid-js';
-import exifr from 'exifr';
-import type { SpeciesWithCount } from '~/lib/queries';
+import { createSignal, For, Show } from "solid-js";
+import exifr from "exifr";
+import type { SpeciesWithCount } from "~/lib/queries";
 
 export interface PendingPhoto {
   file: File;
@@ -9,7 +9,7 @@ export interface PendingPhoto {
 }
 
 export interface ExifData {
-  date?: string;   // YYYY-MM-DD
+  date?: string; // YYYY-MM-DD
   lat?: number;
   lng?: number;
 }
@@ -26,8 +26,8 @@ export function PhotoUploadArea(props: PhotoUploadAreaProps) {
 
   async function addFiles(files: FileList | null) {
     if (!files) return;
-    const defaultSpeciesId = props.speciesList[0]?.id ?? '';
-    const imageFiles = Array.from(files).filter((f) => f.type.startsWith('image/'));
+    const defaultSpeciesId = props.speciesList[0]?.id ?? "";
+    const imageFiles = Array.from(files).filter((f) => f.type.startsWith("image/"));
     const newPhotos: PendingPhoto[] = imageFiles.map((file) => ({
       file,
       speciesId: defaultSpeciesId,
@@ -38,13 +38,16 @@ export function PhotoUploadArea(props: PhotoUploadAreaProps) {
     // EXIFから最初の画像の日付・緯度経度を取得
     if (props.onExifFound && imageFiles.length > 0) {
       try {
-        const exif = await exifr.parse(imageFiles[0], { gps: true, pick: ['DateTimeOriginal', 'latitude', 'longitude'] });
+        const exif = await exifr.parse(imageFiles[0], {
+          gps: true,
+          pick: ["DateTimeOriginal", "latitude", "longitude"],
+        });
         if (!exif) return;
         const result: ExifData = {};
         if (exif.DateTimeOriginal instanceof Date) {
           result.date = exif.DateTimeOriginal.toISOString().slice(0, 10);
         }
-        if (typeof exif.latitude === 'number' && typeof exif.longitude === 'number') {
+        if (typeof exif.latitude === "number" && typeof exif.longitude === "number") {
           result.lat = exif.latitude;
           result.lng = exif.longitude;
         }
@@ -63,9 +66,7 @@ export function PhotoUploadArea(props: PhotoUploadAreaProps) {
   }
 
   function updateSpecies(index: number, speciesId: string) {
-    props.onChange(
-      props.value.map((p, i) => (i === index ? { ...p, speciesId } : p)),
-    );
+    props.onChange(props.value.map((p, i) => (i === index ? { ...p, speciesId } : p)));
   }
 
   return (
@@ -73,12 +74,19 @@ export function PhotoUploadArea(props: PhotoUploadAreaProps) {
       <div
         class={`relative flex min-h-24 items-center justify-center rounded-xl border-2 border-dashed transition-colors ${
           dragging()
-            ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-950'
-            : 'border-gray-300 bg-gray-50 hover:border-emerald-400 dark:border-gray-600 dark:bg-gray-800'
+            ? "border-emerald-400 bg-emerald-50 dark:bg-emerald-950"
+            : "border-gray-300 bg-gray-50 hover:border-emerald-400 dark:border-gray-600 dark:bg-gray-800"
         }`}
-        onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragging(true);
+        }}
         onDragLeave={() => setDragging(false)}
-        onDrop={(e) => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer?.files ?? null); }}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragging(false);
+          addFiles(e.dataTransfer?.files ?? null);
+        }}
       >
         <label class="flex cursor-pointer flex-col items-center gap-1 p-6 text-center">
           <span class="text-2xl">📷</span>

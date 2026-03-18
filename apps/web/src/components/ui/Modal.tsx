@@ -1,5 +1,5 @@
-import { Show, type JSX } from 'solid-js';
-import { Portal } from 'solid-js/web';
+import { Show, type JSX } from "solid-js";
+import { Portal } from "solid-js/web";
 
 interface ModalProps {
   open: boolean;
@@ -14,7 +14,9 @@ export function Modal(props: ModalProps) {
       <Portal>
         <div
           class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-          onClick={(e) => { if (e.target === e.currentTarget) props.onClose(); }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) props.onClose();
+          }}
         >
           <div class="w-full max-w-md rounded-xl bg-white shadow-xl dark:bg-gray-800">
             <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">

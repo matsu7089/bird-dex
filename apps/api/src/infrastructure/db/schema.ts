@@ -9,19 +9,19 @@ import {
   timestamp,
   uniqueIndex,
   index,
-} from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+} from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 // ─── users ────────────────────────────────────────────────────────────────────
 
-export const users = pgTable('users', {
-  id: uuid('id')
+export const users = pgTable("users", {
+  id: uuid("id")
     .primaryKey()
     .default(sql`gen_random_uuid()`),
-  githubId: varchar('github_id').unique().notNull(),
-  username: varchar('username').notNull(),
-  avatarUrl: varchar('avatar_url'),
-  createdAt: timestamp('created_at', { withTimezone: true })
+  githubId: varchar("github_id").unique().notNull(),
+  username: varchar("username").notNull(),
+  avatarUrl: varchar("avatar_url"),
+  createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .default(sql`now()`),
 });
@@ -29,84 +29,80 @@ export const users = pgTable('users', {
 // ─── species ──────────────────────────────────────────────────────────────────
 
 export const species = pgTable(
-  'species',
+  "species",
   {
-    id: uuid('id')
+    id: uuid("id")
       .primaryKey()
       .default(sql`gen_random_uuid()`),
-    userId: uuid('user_id')
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id),
-    name: varchar('name', { length: 200 }).notNull(),
-    description: text('description'),
-    sortOrder: integer('sort_order').notNull().default(0),
-    bestPhotoId: uuid('best_photo_id'), // FK to photos.id (set null on delete) — managed via db:push
-    createdAt: timestamp('created_at', { withTimezone: true })
+    name: varchar("name", { length: 200 }).notNull(),
+    description: text("description"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    bestPhotoId: uuid("best_photo_id"), // FK to photos.id (set null on delete) — managed via db:push
+    createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .default(sql`now()`),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
+    updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
       .default(sql`now()`),
   },
   (table) => [
-    uniqueIndex('species_user_id_name_uidx').on(table.userId, table.name),
-    index('species_user_id_sort_order_idx').on(table.userId, table.sortOrder),
+    uniqueIndex("species_user_id_name_uidx").on(table.userId, table.name),
+    index("species_user_id_sort_order_idx").on(table.userId, table.sortOrder),
   ],
 );
 
 // ─── sightings ────────────────────────────────────────────────────────────────
 
 export const sightings = pgTable(
-  'sightings',
+  "sightings",
   {
-    id: uuid('id')
+    id: uuid("id")
       .primaryKey()
       .default(sql`gen_random_uuid()`),
-    userId: uuid('user_id')
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id),
-    memo: text('memo'),
-    sightedAt: date('sighted_at').notNull(),
-    latitude: decimal('latitude', { precision: 10, scale: 7 }).notNull(),
-    longitude: decimal('longitude', { precision: 10, scale: 7 }).notNull(),
-    locationName: varchar('location_name', { length: 200 }),
-    createdAt: timestamp('created_at', { withTimezone: true })
+    memo: text("memo"),
+    sightedAt: date("sighted_at").notNull(),
+    latitude: decimal("latitude", { precision: 10, scale: 7 }).notNull(),
+    longitude: decimal("longitude", { precision: 10, scale: 7 }).notNull(),
+    locationName: varchar("location_name", { length: 200 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .default(sql`now()`),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
+    updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
       .default(sql`now()`),
   },
-  (table) => [
-    index('sightings_user_id_sighted_at_idx').on(table.userId, table.sightedAt),
-  ],
+  (table) => [index("sightings_user_id_sighted_at_idx").on(table.userId, table.sightedAt)],
 );
 
 // ─── photos ───────────────────────────────────────────────────────────────────
 
 export const photos = pgTable(
-  'photos',
+  "photos",
   {
-    id: uuid('id')
+    id: uuid("id")
       .primaryKey()
       .default(sql`gen_random_uuid()`),
-    sightingId: uuid('sighting_id')
+    sightingId: uuid("sighting_id")
       .notNull()
-      .references(() => sightings.id, { onDelete: 'cascade' }),
-    speciesId: uuid('species_id')
+      .references(() => sightings.id, { onDelete: "cascade" }),
+    speciesId: uuid("species_id")
       .notNull()
-      .references(() => species.id, { onDelete: 'restrict' }),
-    blobUrl: varchar('blob_url').notNull(),
-    thumbnailUrl: varchar('thumbnail_url'),
-    originalFilename: varchar('original_filename').notNull(),
-    sortOrder: integer('sort_order').notNull().default(0),
-    createdAt: timestamp('created_at', { withTimezone: true })
+      .references(() => species.id, { onDelete: "restrict" }),
+    blobUrl: varchar("blob_url").notNull(),
+    thumbnailUrl: varchar("thumbnail_url"),
+    originalFilename: varchar("original_filename").notNull(),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .default(sql`now()`),
   },
-  (table) => [
-    index('photos_species_id_created_at_idx').on(table.speciesId, table.createdAt),
-  ],
+  (table) => [index("photos_species_id_created_at_idx").on(table.speciesId, table.createdAt)],
 );
 
 // ─── Inferred types ───────────────────────────────────────────────────────────

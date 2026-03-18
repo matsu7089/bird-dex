@@ -1,24 +1,24 @@
-import { randomUUID } from 'node:crypto';
-import sharp from 'sharp';
-import { BlobKey } from '../../domain/value-objects/blob-key.js';
-import type { ISightingRepository } from '../../domain/repositories/sighting-repository.js';
-import type { ISpeciesRepository } from '../../domain/repositories/species-repository.js';
-import type { IPhotoRepository } from '../../domain/repositories/photo-repository.js';
-import type { IBlobStorage } from '../../domain/repositories/blob-storage.js';
-import type { Photo } from '../../domain/entities/photo.js';
+import { randomUUID } from "node:crypto";
+import sharp from "sharp";
+import { BlobKey } from "../../domain/value-objects/blob-key.js";
+import type { ISightingRepository } from "../../domain/repositories/sighting-repository.js";
+import type { ISpeciesRepository } from "../../domain/repositories/species-repository.js";
+import type { IPhotoRepository } from "../../domain/repositories/photo-repository.js";
+import type { IBlobStorage } from "../../domain/repositories/blob-storage.js";
+import type { Photo } from "../../domain/entities/photo.js";
 
 export class InvalidPhotoError extends Error {}
 export class FileTooLargeError extends Error {}
 export class SightingNotFoundError extends Error {}
 export class SpeciesNotFoundError extends Error {}
 
-const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const ALLOWED_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const EXT_MAP: Record<string, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
 };
 
 export class AddPhotoToSighting {
@@ -45,7 +45,7 @@ export class AddPhotoToSighting {
     }
 
     if (input.file.length > MAX_FILE_SIZE) {
-      throw new FileTooLargeError('File exceeds 10MB limit');
+      throw new FileTooLargeError("File exceeds 10MB limit");
     }
 
     const sighting = await this.sightingRepository.findById(sightingId, userId);

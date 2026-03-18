@@ -1,15 +1,15 @@
-import { createFileRoute } from '@tanstack/solid-router';
-import { createQuery, useQueryClient } from '@tanstack/solid-query';
-import { createSignal, Show } from 'solid-js';
-import { apiFetch } from '~/lib/api';
-import { fetchers, queryKeys } from '~/lib/queries';
-import { SpeciesForm } from '~/components/species/SpeciesForm';
-import { PhotoGrid } from '~/components/photos/PhotoGrid';
-import { Button } from '~/components/ui/Button';
-import { Pagination } from '~/components/ui/Pagination';
-import { Spinner } from '~/components/ui/Spinner';
+import { createFileRoute } from "@tanstack/solid-router";
+import { createQuery, useQueryClient } from "@tanstack/solid-query";
+import { createSignal, Show } from "solid-js";
+import { apiFetch } from "~/lib/api";
+import { fetchers, queryKeys } from "~/lib/queries";
+import { SpeciesForm } from "~/components/species/SpeciesForm";
+import { PhotoGrid } from "~/components/photos/PhotoGrid";
+import { Button } from "~/components/ui/Button";
+import { Pagination } from "~/components/ui/Pagination";
+import { Spinner } from "~/components/ui/Spinner";
 
-export const Route = createFileRoute('/species/$speciesId')({
+export const Route = createFileRoute("/species/$speciesId")({
   component: SpeciesDetailPage,
 });
 
@@ -30,8 +30,8 @@ function SpeciesDetailPage() {
   }));
 
   async function handleDeletePhoto(photoId: string) {
-    if (!confirm('この写真を削除しますか？')) return;
-    await apiFetch(`/api/photos/${photoId}`, { method: 'DELETE' });
+    if (!confirm("この写真を削除しますか？")) return;
+    await apiFetch(`/api/photos/${photoId}`, { method: "DELETE" });
     queryClient.invalidateQueries({ queryKey: queryKeys.speciesPhotos(speciesId, page()) });
     queryClient.invalidateQueries({ queryKey: queryKeys.speciesDetail(speciesId) });
     queryClient.invalidateQueries({ queryKey: queryKeys.species() });
@@ -52,7 +52,9 @@ function SpeciesDetailPage() {
   return (
     <div>
       <Show when={speciesQuery.isPending}>
-        <div class="flex justify-center py-12"><Spinner /></div>
+        <div class="flex justify-center py-12">
+          <Spinner />
+        </div>
       </Show>
       <Show when={speciesQuery.data}>
         {(species) => (
@@ -64,12 +66,16 @@ function SpeciesDetailPage() {
                   <p class="mt-1 text-gray-600 dark:text-gray-400">{species().description}</p>
                 )}
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setShowEdit(true)}>編集</Button>
+              <Button variant="ghost" size="sm" onClick={() => setShowEdit(true)}>
+                編集
+              </Button>
             </div>
 
             <h2 class="mb-3 text-lg font-semibold">ギャラリー</h2>
             <Show when={photosQuery.isPending}>
-              <div class="flex justify-center py-8"><Spinner /></div>
+              <div class="flex justify-center py-8">
+                <Spinner />
+              </div>
             </Show>
             <Show when={photosQuery.data}>
               {(data) => (

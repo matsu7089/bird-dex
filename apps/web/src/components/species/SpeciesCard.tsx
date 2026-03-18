@@ -1,7 +1,7 @@
-import { Link } from '@tanstack/solid-router';
-import { Show } from 'solid-js';
-import type { SpeciesWithCount } from '~/lib/queries';
-import { Badge } from '~/components/ui/Badge';
+import { Link } from "@tanstack/solid-router";
+import { Show } from "solid-js";
+import type { SpeciesWithCount } from "~/lib/queries";
+import { Badge } from "~/components/ui/Badge";
 
 interface SpeciesCardProps {
   species: SpeciesWithCount;
@@ -27,7 +27,9 @@ export function SpeciesCard(props: SpeciesCardProps) {
       <div class="p-4">
         <div class="flex items-start justify-between gap-2">
           <div class="min-w-0">
-            <h3 class="truncate font-semibold text-gray-900 dark:text-gray-100">{props.species.name}</h3>
+            <h3 class="truncate font-semibold text-gray-900 dark:text-gray-100">
+              {props.species.name}
+            </h3>
             {props.species.description && (
               <p class="mt-1 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
                 {props.species.description}
