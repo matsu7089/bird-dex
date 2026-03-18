@@ -4,10 +4,15 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt .",
     "type-check": "turbo run type-check"
   },
   "devDependencies": {
+    "oxfmt": "^0.41.0",
+    "oxlint": "^1.56.0",
     "turbo": "^2.5.4",
     "typescript": "^5.8.2"
   },
@@ -17,6 +22,8 @@
   },
   "packageManager": "pnpm@10.11.0",
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
