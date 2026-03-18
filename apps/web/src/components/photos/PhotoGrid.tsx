@@ -1,6 +1,7 @@
-import { For, Show } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 import type { PhotoWithSpecies } from "~/lib/queries";
 import { formatDate } from "~/lib/utils";
+import { PhotoLightbox } from "./PhotoLightbox";
 
 interface PhotoGridProps {
   photos: PhotoWithSpecies[];
@@ -10,6 +11,8 @@ interface PhotoGridProps {
 }
 
 export function PhotoGrid(props: PhotoGridProps) {
+  const [lightboxIndex, setLightboxIndex] = createSignal<number | null>(null);
+
   return (
     <Show
       when={props.photos.length > 0}
@@ -17,15 +20,16 @@ export function PhotoGrid(props: PhotoGridProps) {
     >
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         <For each={props.photos}>
-          {(photo) => {
+          {(photo, i) => {
             const isBest = () => props.bestPhotoId === photo.id;
             return (
               <div class="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
                 <img
                   src={photo.thumbnailUrl ?? photo.blobUrl}
                   alt={photo.speciesName}
-                  class="aspect-square w-full object-cover"
+                  class="aspect-square w-full cursor-pointer object-cover"
                   loading="lazy"
+                  onClick={() => setLightboxIndex(i())}
                 />
                 <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 p-2 text-white opacity-0 transition-opacity group-hover:opacity-100">
                   <p class="truncate text-xs font-medium">{photo.speciesName}</p>
@@ -64,6 +68,13 @@ export function PhotoGrid(props: PhotoGridProps) {
           }}
         </For>
       </div>
+      <Show when={lightboxIndex() !== null}>
+        <PhotoLightbox
+          photos={props.photos}
+          initialIndex={lightboxIndex()!}
+          onClose={() => setLightboxIndex(null)}
+        />
+      </Show>
     </Show>
   );
 }
