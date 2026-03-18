@@ -102,7 +102,9 @@ function SightingDetailPage() {
               </div>
             </div>
 
-            {s().memo && <p class="text-gray-700 dark:text-gray-300">{s().memo}</p>}
+            {s().memo && (
+              <p class="whitespace-pre-wrap text-gray-700 dark:text-gray-300">{s().memo}</p>
+            )}
 
             <PhotoGrid photos={s().photos} onDelete={handleDeletePhoto} />
 
