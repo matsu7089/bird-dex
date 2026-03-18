@@ -1,0 +1,41 @@
+# ─── Stage 1: builder ─────────────────────────────────────────────────────────
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+RUN corepack enable && corepack prepare pnpm@10.11.0 --activate
+
+# Copy workspace manifests first for layer cache optimization
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml turbo.json ./
+COPY apps/api/package.json ./apps/api/
+COPY packages/shared/package.json ./packages/shared/
+
+RUN pnpm install --frozen-lockfile
+
+# Copy all sources
+COPY apps/api/ ./apps/api/
+COPY packages/shared/ ./packages/shared/
+
+# Build API (shared is exported as TS and compiled inline)
+RUN pnpm --filter @bird-dex/api build
+
+# Extract production dependencies only
+RUN pnpm --filter @bird-dex/api deploy --prod /deploy/api
+
+# ─── Stage 2: runner ──────────────────────────────────────────────────────────
+FROM node:20-alpine AS runner
+
+# Required for healthcheck and sharp prebuilt binary
+RUN apk add --no-cache curl vips
+
+WORKDIR /app
+
+COPY --from=builder /deploy/api ./
+COPY --from=builder /app/apps/api/dist ./dist
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
+CMD ["node", "dist/index.js"]
