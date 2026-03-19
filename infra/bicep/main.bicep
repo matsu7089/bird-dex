@@ -61,7 +61,6 @@ module appService 'modules/appService.bicep' = {
 module staticWebApp 'modules/staticWebApp.bicep' = {
   name: 'staticWebApp'
   params: {
-    location: location
     envName: envName
   }
 }
