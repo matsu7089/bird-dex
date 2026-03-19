@@ -36,30 +36,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: docker/setup-buildx-action@v3
-
-      - uses: azure/login@v2
+      - uses: pnpm/action-setup@v4
         with:
-          creds: "${{ secrets.AZURE_CREDENTIALS }}"
+          version: 10
 
-      - name: Login to ACR
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build --filter @bird-dex/api...
+
+      - name: Create deploy package
         run: |
-          token=$(az acr login --name ${{ secrets.ACR_NAME }} --expose-token --output tsv --query accessToken)
-          echo "$token" | docker login ${{ secrets.ACR_LOGIN_SERVER }} \
-            --username 00000000-0000-0000-0000-000000000000 \
-            --password-stdin
+          pnpm deploy --filter @bird-dex/api --prod /tmp/api-deploy
+          cd /tmp/api-deploy
+          zip -r $GITHUB_WORKSPACE/api.zip .
 
-      - uses: docker/build-push-action@v6
+      - uses: actions/upload-artifact@v4
         with:
-          context: .
-          file: docker/Dockerfile.api
-          push: true
-          tags: ${{ secrets.ACR_LOGIN_SERVER }}/api:${{ needs.prepare.outputs.tag }}
-          build-args: |
-            GITHUB_REDIRECT_URL=${{ secrets.GH_REDIRECT_URL }}
-            FRONTEND_URL=${{ secrets.FRONTEND_URL }}
-          cache-from: type=gha,scope=api
-          cache-to: type=gha,scope=api,mode=max
+          name: api-package
+          path: api.zip
 
   build-web:
     runs-on: ubuntu-latest
@@ -67,28 +66,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: docker/setup-buildx-action@v3
-
-      - uses: azure/login@v2
+      - uses: pnpm/action-setup@v4
         with:
-          creds: "${{ secrets.AZURE_CREDENTIALS }}"
+          version: 10
 
-      - name: Login to ACR
-        run: |
-          token=$(az acr login --name ${{ secrets.ACR_NAME }} --expose-token --output tsv --query accessToken)
-          echo "$token" | docker login ${{ secrets.ACR_LOGIN_SERVER }} \
-            --username 00000000-0000-0000-0000-000000000000 \
-            --password-stdin
-
-      - uses: docker/build-push-action@v6
+      - uses: actions/setup-node@v4
         with:
-          context: .
-          file: docker/Dockerfile.web
-          push: true
-          tags: ${{ secrets.ACR_LOGIN_SERVER }}/web:${{ needs.prepare.outputs.tag }}
-          build-args: VITE_API_URL=${{ secrets.API_URL }}
-          cache-from: type=gha,scope=web
-          cache-to: type=gha,scope=web,mode=max
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build web
+        run: pnpm build --filter @bird-dex/web
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: apps/web/dist
 
   deploy:
     runs-on: ubuntu-latest
@@ -98,7 +95,7 @@ jobs:
 
       - uses: azure/login@v2
         with:
-          creds: "${{ secrets.AZURE_CREDENTIALS }}"
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy Bicep (infra changed)
         if: needs.prepare.outputs.infra-changed == 'true'
@@ -106,23 +103,36 @@ jobs:
           az deployment group create \
             --resource-group ${{ secrets.AZURE_RG }} \
             --template-file infra/bicep/main.bicep \
-            --parameters infra/bicep/main.bicepparam \
-            --parameters apiImageTag=${{ needs.prepare.outputs.tag }} \
-                         webImageTag=${{ needs.prepare.outputs.tag }}
+            --parameters infra/bicep/main.bicepparam
         env:
           DB_ADMIN_PASSWORD: ${{ secrets.DB_PASSWORD }}
           GITHUB_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          GITHUB_REDIRECT_URL: ${{ secrets.GH_REDIRECT_URL }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
 
-      - name: Update container images only
-        if: needs.prepare.outputs.infra-changed == 'false'
+      - uses: actions/download-artifact@v4
+        with:
+          name: api-package
+
+      - name: Deploy API to App Service
         run: |
-          az containerapp update \
+          az webapp deploy \
+            --resource-group ${{ secrets.AZURE_RG }} \
             --name birddex-prod-api \
-            --resource-group ${{ secrets.AZURE_RG }} \
-            --image ${{ secrets.ACR_LOGIN_SERVER }}/api:${{ needs.prepare.outputs.tag }}
-          az containerapp update \
-            --name birddex-prod-web \
-            --resource-group ${{ secrets.AZURE_RG }} \
-            --image ${{ secrets.ACR_LOGIN_SERVER }}/web:${{ needs.prepare.outputs.tag }}
+            --src-path api.zip \
+            --type zip
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: web-dist
+
+      - name: Deploy Web to Static Web Apps
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: web-dist
+          skip_app_build: true

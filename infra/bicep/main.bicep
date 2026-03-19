@@ -12,18 +12,8 @@ param githubClientSecret string
 @secure()
 param sessionSecret string
 
-param apiImageTag string = 'latest'
-param webImageTag string = 'latest'
-
-// ─── ACR ──────────────────────────────────────────────────────────────────────
-
-module acr 'modules/acr.bicep' = {
-  name: 'acr'
-  params: {
-    location: location
-    envName: envName
-  }
-}
+param githubRedirectUrl string
+param frontendUrl string
 
 // ─── PostgreSQL ───────────────────────────────────────────────────────────────
 
@@ -46,17 +36,13 @@ module storage 'modules/storage.bicep' = {
   }
 }
 
-// ─── Container Apps ───────────────────────────────────────────────────────────
+// ─── App Service ──────────────────────────────────────────────────────────────
 
-module containerApps 'modules/containerApps.bicep' = {
-  name: 'containerApps'
+module appService 'modules/appService.bicep' = {
+  name: 'appService'
   params: {
     location: location
     envName: envName
-    acrLoginServer: acr.outputs.loginServer
-    acrName: acr.outputs.name
-    apiImageTag: apiImageTag
-    webImageTag: webImageTag
     databaseUrl: postgres.outputs.connectionString
     blobEndpoint: storage.outputs.endpoint
     blobAccessKey: storage.outputs.accountName
@@ -65,11 +51,23 @@ module containerApps 'modules/containerApps.bicep' = {
     githubClientId: githubClientId
     githubClientSecret: githubClientSecret
     sessionSecret: sessionSecret
+    githubRedirectUrl: githubRedirectUrl
+    frontendUrl: frontendUrl
+  }
+}
+
+// ─── Static Web App ───────────────────────────────────────────────────────────
+
+module staticWebApp 'modules/staticWebApp.bicep' = {
+  name: 'staticWebApp'
+  params: {
+    location: location
+    envName: envName
   }
 }
 
 // ─── Outputs ──────────────────────────────────────────────────────────────────
 
-output apiFqdn string = containerApps.outputs.apiFqdn
-output webFqdn string = containerApps.outputs.webFqdn
-output acrLoginServer string = acr.outputs.loginServer
+output apiUrl string = appService.outputs.apiUrl
+output webHostname string = staticWebApp.outputs.defaultHostName
+output swaDeploymentToken string = staticWebApp.outputs.deploymentToken
