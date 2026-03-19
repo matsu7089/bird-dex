@@ -1,5 +1,6 @@
 using 'main.bicep'
 
+
 param envName = 'prod'
 param location = 'japaneast'
 param dbAdminPassword = readEnvironmentVariable('DB_ADMIN_PASSWORD')
