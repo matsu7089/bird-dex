@@ -9,3 +9,4 @@ param githubClientSecret = readEnvironmentVariable('GITHUB_CLIENT_SECRET')
 param sessionSecret = readEnvironmentVariable('SESSION_SECRET')
 param githubRedirectUrl = readEnvironmentVariable('GITHUB_REDIRECT_URL')
 param frontendUrl = readEnvironmentVariable('FRONTEND_URL')
+
