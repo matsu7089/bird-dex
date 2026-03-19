@@ -15,6 +15,18 @@ param sessionSecret string
 param githubRedirectUrl string
 param frontendUrl string
 
+param apiImageTag string = 'latest'
+
+// ─── ACR ──────────────────────────────────────────────────────────────────────
+
+module acr 'modules/acr.bicep' = {
+  name: 'acr'
+  params: {
+    location: location
+    envName: envName
+  }
+}
+
 // ─── PostgreSQL ───────────────────────────────────────────────────────────────
 
 module postgres 'modules/postgres.bicep' = {
@@ -36,13 +48,16 @@ module storage 'modules/storage.bicep' = {
   }
 }
 
-// ─── App Service ──────────────────────────────────────────────────────────────
+// ─── Container App (API) ──────────────────────────────────────────────────────
 
-module appService 'modules/appService.bicep' = {
-  name: 'appService'
+module containerApi 'modules/containerApi.bicep' = {
+  name: 'containerApi'
   params: {
     location: location
     envName: envName
+    acrLoginServer: acr.outputs.loginServer
+    acrName: acr.outputs.name
+    apiImageTag: apiImageTag
     databaseUrl: postgres.outputs.connectionString
     blobEndpoint: storage.outputs.endpoint
     blobAccessKey: storage.outputs.accountName
@@ -56,7 +71,7 @@ module appService 'modules/appService.bicep' = {
   }
 }
 
-// ─── Static Web App ───────────────────────────────────────────────────────────
+// ─── Static Web App (Web) ─────────────────────────────────────────────────────
 
 module staticWebApp 'modules/staticWebApp.bicep' = {
   name: 'staticWebApp'
@@ -67,6 +82,7 @@ module staticWebApp 'modules/staticWebApp.bicep' = {
 
 // ─── Outputs ──────────────────────────────────────────────────────────────────
 
-output apiUrl string = appService.outputs.apiUrl
+output apiUrl string = containerApi.outputs.apiUrl
+output acrLoginServer string = acr.outputs.loginServer
 output webHostname string = staticWebApp.outputs.defaultHostName
 output swaDeploymentToken string = staticWebApp.outputs.deploymentToken
