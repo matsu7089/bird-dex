@@ -18,10 +18,9 @@ param frontendUrl string
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: 'birddex-${envName}-plan'
   location: location
-  kind: 'linux'
   sku: {
-    name: 'B1'
-    tier: 'Basic'
+    name: 'F1'
+    tier: 'Free'
   }
   properties: {
     reserved: true
