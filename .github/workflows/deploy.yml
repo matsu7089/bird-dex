@@ -49,7 +49,7 @@ jobs:
 
       - name: Create deploy package
         run: |
-          pnpm deploy --filter @bird-dex/api --prod /tmp/api-deploy
+          pnpm deploy --filter @bird-dex/api --prod --legacy /tmp/api-deploy
           cd /tmp/api-deploy
           zip -r $GITHUB_WORKSPACE/api.zip .
 
