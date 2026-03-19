@@ -1,4 +1,4 @@
-param location string
+param location string = 'eastasia'
 param envName string
 
 resource staticWebApp 'Microsoft.Web/staticSites@2022-09-01' = {
