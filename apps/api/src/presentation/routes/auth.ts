@@ -26,12 +26,13 @@ export function createAuthRoutes(
   router.get("/github", async (c) => {
     const { url, state } = githubOAuthClient.createAuthorizationURL();
     const secret = getSessionSecret();
+    const isProd = process.env.NODE_ENV === "production";
     await setSignedCookie(c, "oauth_state", state, secret, {
       httpOnly: true,
-      sameSite: "Lax",
+      sameSite: isProd ? "None" : "Lax",
       path: "/",
       maxAge: STATE_MAX_AGE,
-      secure: process.env.NODE_ENV === "production",
+      secure: isProd,
     });
     return c.redirect(url.toString());
   });
@@ -55,10 +56,10 @@ export function createAuthRoutes(
 
     await setSignedCookie(c, "session", user.id, secret, {
       httpOnly: true,
-      sameSite: "Lax",
+      sameSite: isProd ? "None" : "Lax",
       path: "/",
       maxAge: SESSION_MAX_AGE,
-      secure: process.env.NODE_ENV === "production",
+      secure: isProd,
     });
 
     const frontendUrl = process.env.FRONTEND_URL ?? "http://localhost:5173";
