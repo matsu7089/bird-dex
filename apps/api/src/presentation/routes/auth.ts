@@ -7,6 +7,7 @@ import { createAuthMiddleware, type HonoEnv } from "../middleware/auth.js";
 
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 const STATE_MAX_AGE = 600; // 10 minutes
+const isProd = process.env.NODE_ENV === "production";
 
 function getSessionSecret(): string {
   const secret = process.env.SESSION_SECRET;
@@ -26,7 +27,6 @@ export function createAuthRoutes(
   router.get("/github", async (c) => {
     const { url, state } = githubOAuthClient.createAuthorizationURL();
     const secret = getSessionSecret();
-    const isProd = process.env.NODE_ENV === "production";
     await setSignedCookie(c, "oauth_state", state, secret, {
       httpOnly: true,
       sameSite: isProd ? "None" : "Lax",
