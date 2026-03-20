@@ -34,14 +34,16 @@ export function Navbar(props: NavbarProps) {
           class="text-sm text-gray-600 hover:text-emerald-700 dark:text-gray-300 dark:hover:text-emerald-400 no-underline"
           activeProps={{ class: "text-emerald-700 font-semibold dark:text-emerald-400" }}
         >
-          観察記録
+          <span class="sm:hidden">記録</span>
+          <span class="hidden sm:inline">観察記録</span>
         </Link>
         <Link
           to="/map"
           class="text-sm text-gray-600 hover:text-emerald-700 dark:text-gray-300 dark:hover:text-emerald-400 no-underline"
           activeProps={{ class: "text-emerald-700 font-semibold dark:text-emerald-400" }}
         >
-          ヒートマップ
+          <span class="sm:hidden">マップ</span>
+          <span class="hidden sm:inline">ヒートマップ</span>
         </Link>
       </div>
       <div class="ml-auto flex items-center gap-3">
