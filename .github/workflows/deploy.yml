@@ -140,3 +140,10 @@ jobs:
           action: upload
           app_location: web-dist
           skip_app_build: true
+
+      - name: Purge old ACR images
+        run: |
+          az acr run \
+            --registry ${{ secrets.ACR_NAME }} \
+            --cmd "acr purge --filter 'api:[0-9a-f]{8}' --ago 7d --keep 3" \
+            /dev/null
