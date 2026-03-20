@@ -52,8 +52,6 @@ jobs:
           GITHUB_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
-          GITHUB_REDIRECT_URL: ${{ secrets.GH_REDIRECT_URL }}
-          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
 
   build-api:
     runs-on: ubuntu-latest
@@ -81,6 +79,9 @@ jobs:
           file: docker/Dockerfile.api
           push: true
           tags: ${{ secrets.ACR_LOGIN_SERVER }}/api:${{ needs.prepare.outputs.tag }}
+          build-args: |
+            GITHUB_REDIRECT_URL=${{ secrets.GH_REDIRECT_URL }}
+            FRONTEND_URL=${{ secrets.FRONTEND_URL }}
           cache-from: type=gha,scope=api
           cache-to: type=gha,scope=api,mode=max
 

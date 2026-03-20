@@ -12,8 +12,6 @@ param githubClientSecret string
 @secure()
 param sessionSecret string
 
-param githubRedirectUrl string
-param frontendUrl string
 
 // ─── ACR ──────────────────────────────────────────────────────────────────────
 
