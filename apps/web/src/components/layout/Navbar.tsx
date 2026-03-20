@@ -19,7 +19,7 @@ export function Navbar(props: NavbarProps) {
   return (
     <nav class="sticky top-0 z-40 flex items-center gap-4 border-b border-gray-200 bg-white px-6 py-3 dark:border-gray-700 dark:bg-gray-900">
       <Link to="/" class="text-lg font-bold text-emerald-700 dark:text-emerald-400 no-underline">
-        🦅 BirdDex
+        <span class="hidden sm:inline">🦅 </span>BirdDex
       </Link>
       <div class="flex gap-4 ml-4">
         <Link
@@ -54,7 +54,9 @@ export function Navbar(props: NavbarProps) {
                 class="h-7 w-7 rounded-full"
               />
             )}
-            <span class="text-sm text-gray-600 dark:text-gray-400">{props.user.username}</span>
+            <span class="hidden sm:inline text-sm text-gray-600 dark:text-gray-400">
+              {props.user.username}
+            </span>
             <button
               onClick={handleLogout}
               class="text-sm text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
