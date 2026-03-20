@@ -15,7 +15,6 @@ param sessionSecret string
 
 param githubRedirectUrl string
 
-
 // ─── ACR ──────────────────────────────────────────────────────────────────────
 
 module acr 'modules/acr.bicep' = {
