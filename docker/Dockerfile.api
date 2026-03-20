@@ -25,6 +25,8 @@ RUN pnpm --filter @bird-dex/api deploy --prod --legacy /deploy/api
 # ─── Stage 2: runner ──────────────────────────────────────────────────────────
 FROM node:20-alpine AS runner
 
+ENV NODE_ENV=production
+
 ARG GITHUB_REDIRECT_URL=http://localhost:3000/auth/github/callback
 ENV GITHUB_REDIRECT_URL=$GITHUB_REDIRECT_URL
 
