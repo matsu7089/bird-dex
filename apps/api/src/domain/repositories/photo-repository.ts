@@ -15,6 +15,12 @@ export interface IPhotoRepository {
     thumbnailUrl?: string | null;
     originalFilename: string;
     sortOrder?: number;
+    cameraMake?: string | null;
+    cameraModel?: string | null;
+    fNumber?: number | null;
+    shutterSpeed?: number | null;
+    focalLength?: number | null;
+    iso?: number | null;
   }): Promise<Photo>;
   findById(id: string): Promise<Photo | null>;
   update(id: string, data: { speciesId?: string }): Promise<Photo>;

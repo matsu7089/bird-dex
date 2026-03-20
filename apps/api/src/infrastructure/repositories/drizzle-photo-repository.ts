@@ -19,6 +19,12 @@ export class DrizzlePhotoRepository implements IPhotoRepository {
         thumbnailUrl: photos.thumbnailUrl,
         originalFilename: photos.originalFilename,
         sortOrder: photos.sortOrder,
+        cameraMake: photos.cameraMake,
+        cameraModel: photos.cameraModel,
+        fNumber: photos.fNumber,
+        shutterSpeed: photos.shutterSpeed,
+        focalLength: photos.focalLength,
+        iso: photos.iso,
         createdAt: photos.createdAt,
       })
       .from(photos)
@@ -57,6 +63,12 @@ export class DrizzlePhotoRepository implements IPhotoRepository {
         thumbnailUrl: photos.thumbnailUrl,
         originalFilename: photos.originalFilename,
         sortOrder: photos.sortOrder,
+        cameraMake: photos.cameraMake,
+        cameraModel: photos.cameraModel,
+        fNumber: photos.fNumber,
+        shutterSpeed: photos.shutterSpeed,
+        focalLength: photos.focalLength,
+        iso: photos.iso,
         createdAt: photos.createdAt,
       })
       .from(photos)
@@ -77,6 +89,12 @@ export class DrizzlePhotoRepository implements IPhotoRepository {
     thumbnailUrl?: string | null;
     originalFilename: string;
     sortOrder?: number;
+    cameraMake?: string | null;
+    cameraModel?: string | null;
+    fNumber?: number | null;
+    shutterSpeed?: number | null;
+    focalLength?: number | null;
+    iso?: number | null;
   }): Promise<Photo> {
     const rows = await this.db
       .insert(photos)
@@ -87,6 +105,12 @@ export class DrizzlePhotoRepository implements IPhotoRepository {
         thumbnailUrl: data.thumbnailUrl ?? null,
         originalFilename: data.originalFilename,
         sortOrder: data.sortOrder ?? 0,
+        cameraMake: data.cameraMake ?? null,
+        cameraModel: data.cameraModel ?? null,
+        fNumber: data.fNumber ?? null,
+        shutterSpeed: data.shutterSpeed ?? null,
+        focalLength: data.focalLength ?? null,
+        iso: data.iso ?? null,
       })
       .returning();
     return rows[0]!;

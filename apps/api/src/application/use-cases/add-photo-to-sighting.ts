@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import sharp from "sharp";
+import exifr from "exifr";
 import { BlobKey } from "../../domain/value-objects/blob-key.js";
 import type { ISightingRepository } from "../../domain/repositories/sighting-repository.js";
 import type { ISpeciesRepository } from "../../domain/repositories/species-repository.js";
@@ -66,6 +67,32 @@ export class AddPhotoToSighting {
       input.contentType,
     );
 
+    let exifData: {
+      cameraMake?: string | null;
+      cameraModel?: string | null;
+      fNumber?: number | null;
+      shutterSpeed?: number | null;
+      focalLength?: number | null;
+      iso?: number | null;
+    } = {};
+    try {
+      const parsed = await exifr.parse(input.file, {
+        pick: ["Make", "Model", "FNumber", "ExposureTime", "FocalLength", "ISO"],
+      });
+      if (parsed) {
+        exifData = {
+          cameraMake: parsed.Make ?? null,
+          cameraModel: parsed.Model ?? null,
+          fNumber: parsed.FNumber ?? null,
+          shutterSpeed: parsed.ExposureTime ?? null,
+          focalLength: parsed.FocalLength ?? null,
+          iso: parsed.ISO ?? null,
+        };
+      }
+    } catch {
+      // EXIF 読み取り失敗は無視
+    }
+
     return this.photoRepository.create({
       sightingId,
       speciesId: input.speciesId,
@@ -73,6 +100,7 @@ export class AddPhotoToSighting {
       thumbnailUrl,
       originalFilename: input.filename,
       sortOrder: input.sortOrder,
+      ...exifData,
     });
   }
 }

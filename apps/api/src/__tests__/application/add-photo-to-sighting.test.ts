@@ -22,6 +22,11 @@ vi.mock("sharp", () => ({
   })),
 }));
 
+// exifr をモック
+vi.mock("exifr", () => ({
+  default: { parse: vi.fn().mockResolvedValue(null) },
+}));
+
 function makeSighting(): SightingWithPhotos {
   return {
     id: "s-1",
@@ -59,6 +64,12 @@ function makePhoto(): Photo {
     thumbnailUrl: "https://example.com/photo_thumb.jpg",
     originalFilename: "bird.jpg",
     sortOrder: 0,
+    cameraMake: null,
+    cameraModel: null,
+    fNumber: null,
+    shutterSpeed: null,
+    focalLength: null,
+    iso: null,
     createdAt: new Date(),
   };
 }

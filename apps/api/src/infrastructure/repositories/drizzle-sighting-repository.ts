@@ -68,6 +68,12 @@ export class DrizzleSightingRepository implements ISightingRepository {
               thumbnailUrl: photos.thumbnailUrl,
               originalFilename: photos.originalFilename,
               sortOrder: photos.sortOrder,
+              cameraMake: photos.cameraMake,
+              cameraModel: photos.cameraModel,
+              fNumber: photos.fNumber,
+              shutterSpeed: photos.shutterSpeed,
+              focalLength: photos.focalLength,
+              iso: photos.iso,
               createdAt: photos.createdAt,
             })
             .from(photos)
@@ -112,6 +118,12 @@ export class DrizzleSightingRepository implements ISightingRepository {
         thumbnailUrl: photos.thumbnailUrl,
         originalFilename: photos.originalFilename,
         sortOrder: photos.sortOrder,
+        cameraMake: photos.cameraMake,
+        cameraModel: photos.cameraModel,
+        fNumber: photos.fNumber,
+        shutterSpeed: photos.shutterSpeed,
+        focalLength: photos.focalLength,
+        iso: photos.iso,
         createdAt: photos.createdAt,
       })
       .from(photos)

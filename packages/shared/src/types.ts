@@ -65,6 +65,12 @@ export interface PhotoDto {
   thumbnailUrl: string | null;
   originalFilename: string;
   sortOrder: number;
+  cameraMake: string | null;
+  cameraModel: string | null;
+  fNumber: number | null;
+  shutterSpeed: number | null;
+  focalLength: number | null;
+  iso: number | null;
   createdAt: string;
 }
 

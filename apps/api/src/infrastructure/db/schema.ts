@@ -6,6 +6,7 @@ import {
   integer,
   date,
   decimal,
+  doublePrecision,
   timestamp,
   uniqueIndex,
   index,
@@ -98,6 +99,12 @@ export const photos = pgTable(
     thumbnailUrl: varchar("thumbnail_url"),
     originalFilename: varchar("original_filename").notNull(),
     sortOrder: integer("sort_order").notNull().default(0),
+    cameraMake: varchar("camera_make"),
+    cameraModel: varchar("camera_model"),
+    fNumber: doublePrecision("f_number"),
+    shutterSpeed: doublePrecision("shutter_speed"),
+    focalLength: doublePrecision("focal_length"),
+    iso: integer("iso"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .default(sql`now()`),
