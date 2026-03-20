@@ -16,7 +16,6 @@ param githubClientSecret string
 @secure()
 param sessionSecret string
 param githubRedirectUrl string
-param frontendUrl string
 
 resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
   name: acrName
@@ -73,7 +72,6 @@ resource apiApp 'Microsoft.App/containerApps@2024-03-01' = {
             { name: 'GITHUB_CLIENT_SECRET', secretRef: 'github-client-secret' }
             { name: 'SESSION_SECRET', secretRef: 'session-secret' }
             { name: 'GITHUB_REDIRECT_URL', value: githubRedirectUrl }
-            { name: 'FRONTEND_URL', value: frontendUrl }
           ]
         }
       ]
