@@ -5,11 +5,9 @@ param acrName string
 param apiImage string
 @secure()
 param databaseUrl string
-param blobEndpoint string
-param blobAccessKey string
 @secure()
-param blobSecretKey string
-param blobBucket string
+param blobConnectionString string
+param blobContainer string
 param githubClientId string
 @secure()
 param githubClientSecret string
@@ -46,7 +44,7 @@ resource apiApp 'Microsoft.App/containerApps@2024-03-01' = {
       secrets: [
         { name: 'acr-password', value: acr.listCredentials().passwords[0].value }
         { name: 'database-url', value: databaseUrl }
-        { name: 'blob-secret-key', value: blobSecretKey }
+        { name: 'blob-connection-string', value: blobConnectionString }
         { name: 'github-client-secret', value: githubClientSecret }
         { name: 'session-secret', value: sessionSecret }
       ]
@@ -64,10 +62,8 @@ resource apiApp 'Microsoft.App/containerApps@2024-03-01' = {
             { name: 'NODE_ENV', value: 'production' }
             { name: 'PORT', value: '3000' }
             { name: 'DATABASE_URL', secretRef: 'database-url' }
-            { name: 'BLOB_ENDPOINT', value: blobEndpoint }
-            { name: 'BLOB_ACCESS_KEY', value: blobAccessKey }
-            { name: 'BLOB_SECRET_KEY', secretRef: 'blob-secret-key' }
-            { name: 'BLOB_BUCKET', value: blobBucket }
+            { name: 'BLOB_CONNECTION_STRING', secretRef: 'blob-connection-string' }
+            { name: 'BLOB_CONTAINER', value: blobContainer }
             { name: 'GITHUB_CLIENT_ID', value: githubClientId }
             { name: 'GITHUB_CLIENT_SECRET', secretRef: 'github-client-secret' }
             { name: 'SESSION_SECRET', secretRef: 'session-secret' }

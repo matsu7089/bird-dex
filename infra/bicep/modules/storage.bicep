@@ -13,7 +13,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   kind: 'StorageV2'
   properties: {
     accessTier: 'Hot'
-    allowBlobPublicAccess: false
+    allowBlobPublicAccess: true
     minimumTlsVersion: 'TLS1_2'
   }
 }
@@ -27,11 +27,9 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
   parent: blobService
   name: containerName
   properties: {
-    publicAccess: 'None'
+    publicAccess: 'Blob'
   }
 }
 
-output endpoint string = storageAccount.properties.primaryEndpoints.blob
-output accountName string = storageAccount.name
-output accountKey string = storageAccount.listKeys().keys[0].value
+output connectionString string = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=core.windows.net'
 output containerName string = containerName
