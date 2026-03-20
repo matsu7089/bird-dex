@@ -16,40 +16,15 @@ services:
       timeout: 5s
       retries: 5
 
-  rustfs:
-    image: rustfs/rustfs:latest
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
     restart: unless-stopped
     ports:
-      - "9000:9000"
-      - "9001:9001"
-    environment:
-      RUSTFS_ROOT_USER: rustfsadmin
-      RUSTFS_ROOT_PASSWORD: rustfsadmin
+      - "10000:10000"
+    command: azurite-blob --blobHost 0.0.0.0 --loose
     volumes:
-      - rustfsdata:/data
-      - rustfslogs:/logs
-      - ./init-rustfs.sh:/init-rustfs.sh:ro
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf --max-time 3 http://localhost:9000/ 2>/dev/null; exit 0"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 5s
-
-  rustfs-init:
-    image: minio/mc:latest
-    depends_on:
-      rustfs:
-        condition: service_healthy
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - |
-        mc alias set local http://rustfs:9000 rustfsadmin rustfsadmin
-        mc mb --ignore-existing local/birdlog-photos
-        mc anonymous set download local/birdlog-photos
-        echo "RustFS bucket initialized."
+      - azuritedata:/data
 
 volumes:
   pgdata:
-  rustfsdata:
-  rustfslogs:
+  azuritedata:
