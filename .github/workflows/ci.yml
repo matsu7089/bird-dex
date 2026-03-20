@@ -3,6 +3,8 @@ name: CI
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
 
 jobs:
   ci:
@@ -24,3 +26,5 @@ jobs:
       - run: pnpm type-check
 
       - run: pnpm build
+
+      - run: pnpm test
