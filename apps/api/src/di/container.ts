@@ -7,7 +7,7 @@ import { ManageSpecies } from "../application/use-cases/manage-species.js";
 import { DrizzleSightingRepository } from "../infrastructure/repositories/drizzle-sighting-repository.js";
 import { RegisterSighting } from "../application/use-cases/register-sighting.js";
 import { GetHeatmapData } from "../application/use-cases/get-heatmap-data.js";
-import { S3BlobStorage } from "../infrastructure/storage/s3-blob-storage.js";
+import { AzureBlobStorage } from "../infrastructure/storage/azure-blob-storage.js";
 import { DrizzlePhotoRepository } from "../infrastructure/repositories/drizzle-photo-repository.js";
 import { AddPhotoToSighting } from "../application/use-cases/add-photo-to-sighting.js";
 import { GetSpeciesGallery } from "../application/use-cases/get-species-gallery.js";
@@ -29,11 +29,9 @@ export const sightingRepository = new DrizzleSightingRepository(db);
 export const registerSighting = new RegisterSighting(sightingRepository);
 export const getHeatmapData = new GetHeatmapData(sightingRepository);
 
-export const blobStorage = new S3BlobStorage({
-  endpoint: process.env.BLOB_ENDPOINT!,
-  accessKeyId: process.env.BLOB_ACCESS_KEY!,
-  secretAccessKey: process.env.BLOB_SECRET_KEY!,
-  bucket: process.env.BLOB_BUCKET!,
+export const blobStorage = new AzureBlobStorage({
+  connectionString: process.env.BLOB_CONNECTION_STRING!,
+  container: process.env.BLOB_CONTAINER!,
 });
 
 export const photoRepository = new DrizzlePhotoRepository(db);

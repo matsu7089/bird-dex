@@ -14,7 +14,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1010.0",
+    "@azure/storage-blob": "^12.27.0",
     "@bird-dex/shared": "workspace:*",
     "@hono/node-server": "^1.14.1",
     "arctic": "^3.7.0",
