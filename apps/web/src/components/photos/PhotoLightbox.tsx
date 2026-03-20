@@ -1,6 +1,20 @@
-import { createSignal, onCleanup, onMount } from "solid-js";
+import { createSignal, onCleanup, onMount, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 import type { PhotoWithSpecies } from "~/lib/queries";
+
+function formatShutterSpeed(value: number): string {
+  if (value >= 1) return `${value}s`;
+  const denom = Math.round(1 / value);
+  return `1/${denom}s`;
+}
+
+function formatFNumber(value: number): string {
+  return `f/${value % 1 === 0 ? value.toFixed(0) : value}`;
+}
+
+function formatFocalLength(value: number): string {
+  return `${Math.round(value)}mm`;
+}
 
 interface PhotoLightboxProps {
   photos: PhotoWithSpecies[];
@@ -183,6 +197,49 @@ export function PhotoLightbox(props: PhotoLightboxProps) {
             {index() + 1} / {props.photos.length}
           </div>
         )}
+
+        {/* EXIF info */}
+        <Show
+          when={
+            currentPhoto().cameraMake ||
+            currentPhoto().cameraModel ||
+            currentPhoto().fNumber ||
+            currentPhoto().shutterSpeed ||
+            currentPhoto().focalLength ||
+            currentPhoto().iso
+          }
+        >
+          <div class="absolute bottom-4 right-4 rounded-lg bg-black/60 px-3 py-2 text-right text-xs text-white/90 leading-5">
+            <Show when={currentPhoto().cameraMake || currentPhoto().cameraModel}>
+              <div>
+                {[currentPhoto().cameraMake, currentPhoto().cameraModel].filter(Boolean).join(" ")}
+              </div>
+            </Show>
+            <Show
+              when={
+                currentPhoto().fNumber ||
+                currentPhoto().shutterSpeed ||
+                currentPhoto().focalLength ||
+                currentPhoto().iso
+              }
+            >
+              <div>
+                {[
+                  currentPhoto().fNumber != null ? formatFNumber(currentPhoto().fNumber!) : null,
+                  currentPhoto().shutterSpeed != null
+                    ? formatShutterSpeed(currentPhoto().shutterSpeed!)
+                    : null,
+                  currentPhoto().focalLength != null
+                    ? formatFocalLength(currentPhoto().focalLength!)
+                    : null,
+                  currentPhoto().iso != null ? `ISO ${currentPhoto().iso}` : null,
+                ]
+                  .filter(Boolean)
+                  .join("  ")}
+              </div>
+            </Show>
+          </div>
+        </Show>
       </div>
     </Portal>
   );
